@@ -31,14 +31,14 @@
     <div class="recap-card" id="recapCard" style="display: none;">
       <div class="recap-year" id="recapHeading">2025</div>
       <div class="recap-sub">That happened. Here's who took it.</div>
-      <div class="recap-champ" id="recapChamp">—</div>
+      <div class="recap-champ"><span class="crown">👑</span><span id="recapChamp">—</span></div>
       <div class="recap-score" id="recapScore">—</div>
     </div>
 
     <div class="recap-card" id="liveCard" style="display: none;">
       <div class="recap-year"><span class="live-dot"></span>2026 · Live</div>
       <div class="recap-sub">Games are underway. Here's who's leading right now.</div>
-      <div class="recap-champ" id="liveChamp">—</div>
+      <div class="recap-champ"><span class="crown">👑</span><span id="liveChamp">—</span></div>
       <div class="recap-score" id="liveScore">—</div>
     </div>
 
@@ -65,6 +65,7 @@
 
   <div id="toast"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js" crossorigin="anonymous"></script>
   <script src="assets/app.js"></script>
   <script>
     (() => {
@@ -125,6 +126,8 @@
         document.getElementById('teaserNote').style.display = 'none';
         countUp(document.getElementById('liveScore'), top.total, ' pts');
       });
+
+      if (window.twemoji) window.twemoji.parse(document.body);
     })();
   </script>
 </body>

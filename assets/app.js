@@ -311,13 +311,17 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",Department
     return (words[0][0] + words[1][0]).toUpperCase();
   }
   // One color per department, so identity reads at a glance in every
-  // list (leaderboard, by-game breakdown) - deliberately muted/dark
-  // tones (not neon) to stay in the app's "adult" register, cycling by
-  // the numeric suffix on the department id so it's stable regardless
-  // of row order.
+  // list and bar chart - cycling by the numeric suffix on the
+  // department id so it's stable regardless of row order. This exact
+  // set + order is validated (dataviz skill's six checks: lightness,
+  // chroma floor, CVD adjacent-pair separation, normal-vision floor,
+  // contrast) - an earlier hand-picked set failed three of those
+  // checks. Identity is never color-alone anyway (every bar/avatar
+  // sits right next to the department's name), which is what makes
+  // the sub-3:1 contrast on a couple of these slots acceptable.
   const DEPT_COLORS = [
-    '#6640a3', '#a34068', '#a37440', '#407ba3', '#4a8a5a',
-    '#a35440', '#5a5aa3', '#3f8a8a', '#8a6a3f', '#6b4f8a',
+    '#a8631f', '#2a78d6', '#b3306b', '#eb6834', '#1baf7a',
+    '#eda100', '#e87ba4', '#008300', '#4a3aa7', '#e34948',
   ];
   function deptColor(id) {
     const n = parseInt(String(id).replace(/\D/g, ''), 10) || 0;
