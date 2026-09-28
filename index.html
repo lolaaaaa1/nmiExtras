@@ -52,6 +52,13 @@
       <a class="btn3d ghost" href="gallery.html">Gallery</a>
     </div>
 
+  </div>
+
+  <div class="marquee-wrap">
+    <div class="marquee-track" id="marqueeTrack"></div>
+  </div>
+
+  <div class="wrap">
     <div class="foot">Have fun</div>
 
   </div>
@@ -94,6 +101,21 @@
         const rest = name.slice(1);
         el.innerHTML = `<span class="champ-first">${first}<span class="crown">👑</span></span>${rest}`;
       }
+
+      // Placeholder marquee cards, same shape/shadow a real photo would
+      // use - swap for <img> tags once real event photos exist (see
+      // gallery.html's "coming soon" state for that same dependency).
+      const MARQUEE_CARDS = [
+        { bg: '#a8631f', icon: '🎮' },
+        { bg: '#2a78d6', icon: '🏆' },
+        { bg: '#b3306b', icon: '🎉' },
+        { bg: '#1baf7a', icon: '🥇' },
+        { bg: '#4a3aa7', icon: '📸' },
+        { bg: '#e34948', icon: '🕺' },
+      ];
+      const track = document.getElementById('marqueeTrack');
+      const cardsHtml = MARQUEE_CARDS.map((c) => `<div class="marquee-card" style="background:${c.bg}">${c.icon}</div>`).join('');
+      track.innerHTML = cardsHtml + cardsHtml; // doubled for the seamless -50% loop
 
       const profileBtn = document.getElementById('profileBtn');
       const s = session();

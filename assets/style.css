@@ -370,6 +370,30 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
   max-width: 380px; margin: 0 auto;
 }
 
+/* ── PHOTO MARQUEE (Home) ──
+   Full-bleed, continuous, seamless loop: the track holds the card set
+   twice back-to-back and scrolls exactly half its own width, so the
+   join is invisible. Placeholder cards until real event photos exist -
+   same shape/shadow a real <img> would use, so swapping them in later
+   is a content change, not a redesign. Pauses on hover so it's
+   readable, not just a blur going past. */
+.marquee-wrap { overflow: hidden; padding: 10px 0; margin: 6px 0 40px; }
+.marquee-track {
+  display: flex; gap: 14px; width: max-content;
+  animation: marqueeScroll 22s linear infinite;
+}
+.marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+.marquee-card {
+  width: 140px; height: 96px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 30px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+
 /* ── RECAP CARD (Home page's "last year" teaser) ── */
 .recap-card {
   border: 1px solid var(--border); border-radius: 4px; padding: 30px 20px; text-align: center; margin: 34px 0;
