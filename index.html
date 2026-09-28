@@ -70,6 +70,20 @@
     (() => {
       const { session, loadCsv } = window.BTD;
 
+      // A quick count-up instead of the number just appearing - a small
+      // bit of life on the one number each card is actually about.
+      function countUp(el, target, suffix) {
+        const start = performance.now();
+        const duration = 700;
+        function tick(now) {
+          const p = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = `${Math.round(target * eased)}${suffix}`;
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+
       const profileBtn = document.getElementById('profileBtn');
       const s = session();
       if (s && s.token) { profileBtn.textContent = s.name; profileBtn.classList.add('signed-in'); }
@@ -92,8 +106,8 @@
         dep.rows.forEach((r) => { depMap[r.id] = r.name; });
         const top = totals.rows.slice().sort((a, b) => Number(b.total) - Number(a.total))[0];
         document.getElementById('recapChamp').textContent = depMap[top.department_id] || top.department_id;
-        document.getElementById('recapScore').textContent = `${top.total} pts`;
         document.getElementById('recapCard').style.display = '';
+        countUp(document.getElementById('recapScore'), Number(top.total), ' pts');
       });
 
       // Once the first 2026 score actually exists, the "watch out for
@@ -107,9 +121,9 @@
         const top = dep.rows.map((d) => ({ name: d.name, total: sums[d.id] || 0 })).sort((a, b) => b.total - a.total)[0];
         if (!top || top.total <= 0) return;
         document.getElementById('liveChamp').textContent = top.name;
-        document.getElementById('liveScore').textContent = `${top.total} pts`;
         document.getElementById('liveCard').style.display = '';
         document.getElementById('teaserNote').style.display = 'none';
+        countUp(document.getElementById('liveScore'), top.total, ' pts');
       });
     })();
   </script>
