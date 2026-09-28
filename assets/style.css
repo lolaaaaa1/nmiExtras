@@ -294,10 +294,33 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
 .entry-status.err { color: var(--red); }
 .entry-hint { font-family: var(--fb); font-size: 11px; color: var(--muted); margin-top: 14px; }
 
-/* ── FOOTER ── */
+/* ── FOOTER ──
+   One deliberate pop of a different color (indigo, not the house green)
+   for this one celebratory moment - a glow effect, not a plain caption,
+   per the reference (the old app's "HAVE FUN" treatment). Everywhere
+   else on the site stays disciplined; this is the one wink. */
 .foot {
-  text-align: center; padding: 50px 0 0; font-family: var(--fb); font-weight: 700; font-size: 11px;
-  color: var(--muted); text-transform: uppercase; letter-spacing: var(--tracked);
+  text-align: center; padding: 50px 0 0;
+  font-family: var(--fd); font-weight: 800; font-size: clamp(20px, 5vw, 28px);
+  color: #5b4fc4; text-transform: uppercase; letter-spacing: 0.06em;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  animation: footGlow 2.2s ease-in-out infinite;
+}
+@keyframes footGlow {
+  0%, 100% { text-shadow: 0 0 14px rgba(91, 79, 196, 0.45), 0 0 28px rgba(91, 79, 196, 0.25); }
+  50%      { text-shadow: 0 0 22px rgba(91, 79, 196, 0.7),  0 0 40px rgba(91, 79, 196, 0.45); }
+}
+.foot img.emoji {
+  height: 0.85em; width: 0.85em; filter: drop-shadow(0 0 6px rgba(91, 79, 196, 0.5));
+  animation: footBounce 1.6s ease-in-out infinite;
+}
+.foot img.emoji:last-of-type { animation-delay: .3s; }
+@keyframes footBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-4px) rotate(-8deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .foot, .foot img.emoji { animation: none; }
 }
 .foot-links { display: flex; justify-content: center; gap: 18px; margin-top: 12px; }
 .foot-links a {
