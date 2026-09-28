@@ -196,7 +196,22 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
 }
 @media (prefers-reduced-motion: reduce) { .podium-col { animation: none; } }
 
-.podium-col .avatar { width: 34px; height: 34px; font-size: 11px; }
+.podium-col .avatar {
+  width: 34px; height: 34px; font-size: 11px;
+  animation: avatarDance 1.8s ease-in-out .7s infinite;
+}
+/* Each winner dances on their own beat - different duration/delay per
+   column so they move independently, not in robotic lockstep. */
+.podium-col:nth-child(1) .avatar { animation-duration: 1.6s; animation-delay: .85s; }
+.podium-col:nth-child(2) .avatar { animation-duration: 1.9s; animation-delay: .7s; }
+.podium-col:nth-child(3) .avatar { animation-duration: 1.7s; animation-delay: 1s; }
+@keyframes avatarDance {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25%      { transform: translateY(-5px) rotate(-8deg); }
+  50%      { transform: translateY(0) rotate(0deg); }
+  75%      { transform: translateY(-5px) rotate(8deg); }
+}
+@media (prefers-reduced-motion: reduce) { .podium-col .avatar { animation: none; } }
 .podium-col.p1 { order: -1; }
 .podium-col.p1 .avatar { width: 44px; height: 44px; font-size: 13px; background: var(--g600); border-color: var(--g600); color: #fff; }
 .podium-col.p2 .avatar { border-color: var(--silver); color: var(--silver); }
