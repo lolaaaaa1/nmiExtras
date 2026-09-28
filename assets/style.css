@@ -381,7 +381,7 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
    vertical stroke, tilted back over the letter (the "before the M"
    look), not floating symmetrically above the whole glyph. */
 .crown {
-  position: absolute; top: -28px; left: -14px; font-size: 56px; line-height: 1;
+  position: absolute; top: -38px; left: -14px; font-size: 56px; line-height: 1;
   animation:
     crownDrop .85s cubic-bezier(.32, .1, .4, 1.6) .45s backwards,
     crownBounce 1.6s ease-in-out 1.3s infinite;
