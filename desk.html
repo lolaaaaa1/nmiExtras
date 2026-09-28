@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desk — Beyond the Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <div class="strip" id="eventStrip">Nationwide Medical Insurance &nbsp;·&nbsp; Sept 27, 2025 &nbsp;·&nbsp; Safari Valley, Adukrom</div>
+
+  <div class="nav">
+    <div class="nav-inner">
+      <a class="nav-mark" href="index.html" style="text-decoration:none;">Beyond the Desk<span class="dot">.</span></a>
+      <div class="nav-right">
+        <a class="profile-btn" href="index.html">Home</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="hero" style="padding-bottom: 10px;">
+      <h1 class="hero-title" style="font-size: clamp(28px, 6vw, 46px);">Desk</h1>
+      <p class="hero-sub">Sign in to record scores &amp; edit event details</p>
+    </div>
+
+    <div class="setup-card">
+      <div class="modal-sub" style="text-align:center; margin-bottom: 20px;">
+        Only people the organizer has added as GitHub collaborators can save
+        anything here. Everyone else can still open this page, but a save
+        attempt is rejected by GitHub - so this is just a preview for them.
+      </div>
+
+      <div class="mfield"><label>Your name</label><input id="cfgName" placeholder="e.g. Ama"></div>
+      <div class="mfield"><label>Your GitHub access token</label><input id="cfgToken" type="password" placeholder="ghp_..."></div>
+      <div class="modal-actions" style="justify-content: center;">
+        <button class="btn3d ghost" id="setupClear">Sign out</button>
+        <button class="btn3d" id="setupSave">Sign in</button>
+      </div>
+      <div class="setup-status" id="setupStatus"></div>
+    </div>
+
+    <div id="deskSignedIn" style="display: none;">
+
+      <div class="section" id="recordSection">
+        <div class="section-hd"><div class="section-title">Record a score</div></div>
+        <div class="setup-card" style="max-width: 460px;">
+          <div class="mfield"><label>Game</label><select id="entryGame"></select></div>
+          <div class="mfield"><label>Department</label><select id="entryDept"></select></div>
+          <div class="mfield"><label>Score</label><input type="number" id="entryScore" min="0" step="1" value="0"></div>
+          <div class="modal-actions" style="justify-content: center;">
+            <button class="btn3d" id="entrySave">Save score</button>
+          </div>
+          <div class="entry-status" id="entryStatus" style="text-align: center;"></div>
+        </div>
+      </div>
+
+      <div class="section" id="eventSection">
+        <div class="section-hd"><div class="section-title">Event details</div></div>
+        <div class="section-note" style="margin-bottom: 20px;">
+          Shown in the strip at the top of every page, and in this year's headline. Editing here only affects the live year.
+        </div>
+        <div class="setup-card" style="max-width: 460px;">
+          <div class="mfield"><label>Company</label><input id="evCompany" placeholder="e.g. Nationwide Medical Insurance"></div>
+          <div class="mfield"><label>Date</label><input id="evDate" placeholder="e.g. Sept 27, 2025"></div>
+          <div class="mfield"><label>Location</label><input id="evLocation" placeholder="e.g. Safari Valley, Adukrom"></div>
+          <div class="mfield"><label>Title</label><input id="evTitle" placeholder="e.g. Departmental Games"></div>
+          <div class="mfield"><label>Subtitle</label><input id="evSubtitle" placeholder="e.g. May the best department win"></div>
+          <div class="modal-actions" style="justify-content: center;">
+            <button class="btn3d" id="eventSave">Save event details</button>
+          </div>
+          <div class="entry-status" id="eventStatus" style="text-align: center;"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="foot">Have fun out there</div>
+
+  </div>
+
+  <div class="tabbar">
+    <a class="tab-btn" href="index.html">Home</a>
+    <a class="tab-btn" href="games.html">Leaderboard</a>
+    <a class="tab-btn" href="gallery.html">Gallery</a>
+    <a class="tab-btn active" href="desk.html" id="tabDesk" style="display:none;">Desk</a>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    (() => {
+      const { session, saveSession, clearSession, loadCsv, saveCsv, toast } = window.BTD;
+      const YEAR = '2026'; // recording + event details only ever apply to the live year
+      const byId = (id) => document.getElementById(id);
+
+      function refreshSession() {
+        const s = session();
+        const statusEl = byId('setupStatus');
+        const signedInBlock = byId('deskSignedIn');
+        const tabDesk = byId('tabDesk');
+        if (s && s.token) {
+          byId('cfgName').value = s.name;
+          byId('cfgToken').value = s.token;
+          statusEl.textContent = `Signed in as ${s.name}.`;
+          statusEl.classList.add('signed-in');
+          signedInBlock.style.display = '';
+          if (tabDesk) tabDesk.style.display = '';
+        } else {
+          statusEl.textContent = 'Not signed in.';
+          statusEl.classList.remove('signed-in');
+          signedInBlock.style.display = 'none';
+          if (tabDesk) tabDesk.style.display = 'none';
+        }
+      }
+
+      byId('setupSave').addEventListener('click', () => {
+        const name = byId('cfgName').value.trim();
+        const token = byId('cfgToken').value.trim();
+        if (!name || !token) { toast('Name and token are both required.'); return; }
+        saveSession({ name, token });
+        refreshSession();
+        toast(`Signed in as ${name}.`);
+      });
+
+      byId('setupClear').addEventListener('click', () => {
+        clearSession();
+        byId('cfgName').value = '';
+        byId('cfgToken').value = '';
+        refreshSession();
+        toast('Signed out.');
+      });
+
+      async function loadEvent() {
+        const cached = await loadCsv(`data/${YEAR}/event.csv`);
+        const row = cached.rows[0] || {};
+        byId('evCompany').value = row.company || '';
+        byId('evDate').value = row.date || '';
+        byId('evLocation').value = row.location || '';
+        byId('evTitle').value = row.title || '';
+        byId('evSubtitle').value = row.subtitle || '';
+        if (row.company) {
+          byId('eventStrip').textContent = `${row.company}  ·  ${row.date}  ·  ${row.location}`;
+        }
+      }
+
+      byId('eventSave').addEventListener('click', async () => {
+        const statusEl = byId('eventStatus');
+        const s = session();
+        if (!s || !s.token) { toast('Sign in first.'); return; }
+        statusEl.className = 'entry-status';
+        statusEl.textContent = 'Saving…';
+        try {
+          const headers = ['company', 'date', 'location', 'title', 'subtitle'];
+          const row = {
+            company: byId('evCompany').value.trim(),
+            date: byId('evDate').value.trim(),
+            location: byId('evLocation').value.trim(),
+            title: byId('evTitle').value.trim(),
+            subtitle: byId('evSubtitle').value.trim(),
+          };
+          await saveCsv(`data/${YEAR}/event.csv`, headers, [row], `Beyond the Desk: ${s.name} updated event details`);
+          statusEl.classList.add('ok');
+          statusEl.textContent = 'Saved.';
+          toast('Event details saved.');
+        } catch (e) {
+          statusEl.classList.add('err');
+          statusEl.textContent = e.message || 'Could not save.';
+        }
+      });
+
+      async function loadEntryOptions() {
+        const [dep, games] = await Promise.all([
+          loadCsv(`data/${YEAR}/departments.csv`),
+          loadCsv(`data/${YEAR}/games.csv`),
+        ]);
+        const gameSel = byId('entryGame');
+        const deptSel = byId('entryDept');
+        games.rows.forEach((g) => { const o = document.createElement('option'); o.value = g.id; o.textContent = g.name; gameSel.appendChild(o); });
+        dep.rows.forEach((d) => { const o = document.createElement('option'); o.value = d.id; o.textContent = d.name; deptSel.appendChild(o); });
+        return { dep, games };
+      }
+
+      const optionsPromise = loadEntryOptions();
+
+      byId('entrySave').addEventListener('click', async () => {
+        const st = byId('entryStatus');
+        const s = session();
+        if (!s || !s.token) { toast('Sign in first.'); return; }
+        const { dep, games } = await optionsPromise;
+        const gameSel = byId('entryGame');
+        const deptSel = byId('entryDept');
+        const gameId = gameSel.value, deptId = deptSel.value, score = Number(byId('entryScore').value) || 0;
+        const gameName = games.rows.find((g) => g.id === gameId).name;
+        const deptName = dep.rows.find((d) => d.id === deptId).name;
+        st.className = 'entry-status';
+        st.textContent = 'Saving…';
+        try {
+          const path = `data/${YEAR}/scores.csv`;
+          const cached = await loadCsv(path);
+          const headers = cached.headers.length ? cached.headers : ['game_id', 'department_id', 'score'];
+          const rows = cached.rows.slice();
+          const existing = rows.find((r) => r.game_id === gameId && r.department_id === deptId);
+          if (existing) existing.score = String(score);
+          else rows.push({ game_id: gameId, department_id: deptId, score: String(score) });
+
+          const gamesPath = `data/${YEAR}/games.csv`;
+          const gamesCached = await loadCsv(gamesPath);
+          const gRow = gamesCached.rows.find((g) => g.id === gameId);
+          if (gRow && gRow.has_breakdown !== '1') {
+            gRow.has_breakdown = '1';
+            await saveCsv(gamesPath, gamesCached.headers, gamesCached.rows, `Beyond the Desk: mark ${gameName} as scored`);
+          }
+
+          await saveCsv(path, headers, rows, `Beyond the Desk: ${s.name} recorded ${deptName} = ${score} in ${gameName}`);
+          st.classList.add('ok');
+          st.textContent = `Saved — ${deptName}: ${score} pts in ${gameName}.`;
+          toast(`Saved: ${deptName} — ${gameName} = ${score}`);
+        } catch (e) {
+          st.classList.add('err');
+          st.textContent = e.message || 'Could not save.';
+        }
+      });
+
+      refreshSession();
+      loadEvent();
+    })();
+  </script>
+</body>
+</html>

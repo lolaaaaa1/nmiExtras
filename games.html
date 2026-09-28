@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leaderboard — Beyond the Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <div class="strip" id="eventStrip">Nationwide Medical Insurance &nbsp;·&nbsp; Sept 27, 2025 &nbsp;·&nbsp; Safari Valley, Adukrom</div>
+
+  <div class="nav">
+    <div class="nav-inner">
+      <a class="nav-mark" href="index.html" style="text-decoration:none;">Beyond the Desk<span class="dot">.</span></a>
+      <div class="nav-right">
+        <div class="year-toggle" id="yearToggle"></div>
+        <a class="profile-btn" id="profileBtn" href="desk.html" title="Sign in / desk">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="hero" style="padding-bottom: 10px;">
+      <h1 class="hero-title" style="font-size: clamp(26px, 6vw, 44px);">Leaderboard</h1>
+      <p class="hero-sub">All the scores, by department and by game</p>
+    </div>
+
+    <div class="stat-row" id="statRow"></div>
+
+    <div class="section" id="board-section">
+      <div class="section-hd">
+        <div>
+          <div class="section-title">Standings</div>
+          <div class="section-note" id="boardStatus"></div>
+        </div>
+      </div>
+      <div class="podium" id="podium"></div>
+      <div class="board" id="board"></div>
+    </div>
+
+    <div class="section" id="games-section">
+      <div class="section-hd">
+        <div>
+          <div class="section-title">By game</div>
+          <div class="section-note" id="gameSectionNote"></div>
+        </div>
+        <select class="pill-select" id="gameSelect"></select>
+      </div>
+      <div class="board" id="gameBoard"></div>
+    </div>
+
+    <div class="foot" id="foot">Have fun out there</div>
+
+  </div>
+
+  <div class="tabbar">
+    <a class="tab-btn" href="index.html">Home</a>
+    <a class="tab-btn active" href="games.html">Leaderboard</a>
+    <a class="tab-btn" href="gallery.html">Gallery</a>
+    <a class="tab-btn" href="desk.html" id="tabDesk" style="display:none;">Desk</a>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js" crossorigin="anonymous"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

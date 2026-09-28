@@ -1,0 +1,6 @@
+# VS Code history
+.history/
+
+# OS
+.DS_Store
+Thumbs.db

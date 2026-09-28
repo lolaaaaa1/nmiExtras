@@ -1,0 +1,367 @@
+/* ============================================================
+   Beyond the Desk
+   Editorial register, not dashboard: one deliberate accent color
+   (deep green) instead of a scattered palette, oversized confident
+   Syne headlines, tiny tracked-out uppercase labels for nav/meta
+   (the Khoi/Kai reference language), minimal chrome, generous
+   whitespace. Data widgets (leaderboard, stats) still have to be
+   legible and functional - they borrow the same restraint rather
+   than reverting to boxed dashboard cards.
+   ============================================================ */
+
+:root {
+  --g900: #001810;
+  --g800: #002d1c;
+  --g700: #005031;
+  --g600: #006640;
+  --g500: #008050;
+  --g400: #00a362;
+  --g100: #d4f0e3;
+  --g50:  #edf9f3;
+
+  --bg:     #f7f6f3;
+  --surface:#ffffff;
+  --ink:    #17190f;
+  --ink-lt: #52564a;
+  --muted:  #8a8d82;
+  --border: #e2e2df;
+
+  --red: #a8402f;
+  --silver: #5b6b95;
+  --bronze: #b6693a;
+
+  --fd: 'Syne', system-ui, sans-serif;
+  --fb: 'DM Sans', system-ui, sans-serif;
+  --fm: 'DM Mono', monospace;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --tracked: 0.14em;
+}
+
+* , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--fb);
+  font-size: 15px;
+  line-height: 1.55;
+}
+button, select, input { font: inherit; color: inherit; }
+img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.wrap { max-width: 840px; margin: 0 auto; padding: 0 24px 110px; }
+
+/* ── ANNOUNCEMENT STRIP ── */
+.strip {
+  background: var(--g700); color: rgba(255,255,255,0.92);
+  text-align: center; padding: 9px 16px;
+  font-family: var(--fb); font-size: 10.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: var(--tracked);
+}
+
+/* ── NAV ── */
+.nav { background: var(--surface); border-bottom: 1px solid var(--border); }
+.nav-inner {
+  max-width: 840px; margin: 0 auto; padding: 20px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; row-gap: 10px;
+}
+.nav-mark { font-family: var(--fd); font-weight: 700; font-size: 16px; letter-spacing: 0.02em; color: var(--ink); text-decoration: none; }
+.nav-mark .dot { color: var(--g500); }
+.nav-right { display: flex; align-items: center; gap: 22px; }
+
+.year-toggle { display: flex; gap: 16px; }
+.year-link {
+  background: none; border: none; cursor: pointer; padding: 2px 0;
+  color: var(--muted); font-family: var(--fb); font-weight: 600; font-size: 11px;
+  text-transform: uppercase; letter-spacing: var(--tracked);
+  border-bottom: 1.5px solid transparent; transition: color .15s, border-color .15s;
+}
+.year-link.active { color: var(--ink); border-bottom-color: var(--g600); }
+
+.profile-btn {
+  background: none; border: none; cursor: pointer; color: var(--ink-lt);
+  font-family: var(--fb); font-weight: 600; font-size: 11px;
+  text-transform: uppercase; letter-spacing: var(--tracked); text-decoration: none;
+  padding: 2px 0; border-bottom: 1.5px solid transparent; transition: color .15s, border-color .15s;
+}
+.profile-btn:hover { color: var(--ink); }
+.profile-btn.signed-in { color: var(--g600); border-bottom-color: var(--g600); }
+
+/* ── HERO ── */
+.hero { padding: 56px 0 30px; text-align: center; }
+.hero-title {
+  font-family: var(--fd); font-weight: 800; font-size: clamp(22px, 7.5vw, 64px);
+  line-height: 1.04; letter-spacing: -0.01em; color: var(--ink);
+  overflow-wrap: break-word;
+}
+.hero-sub {
+  color: var(--muted); font-size: 11px; margin-top: 16px;
+  text-transform: uppercase; letter-spacing: var(--tracked); font-weight: 600;
+}
+
+/* ── BOTTOM TAB BAR ──
+   Thin-line text tabs (Khoi/Kai nav language), not a filled pill
+   bottom-app bar. */
+.tabbar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+  background: var(--surface); border-top: 1px solid var(--border);
+  display: flex; justify-content: space-around;
+  padding: 16px 4px calc(16px + env(safe-area-inset-bottom, 0px));
+}
+.tab-btn {
+  background: none; border: none; cursor: pointer; color: var(--muted);
+  font-family: var(--fb); font-weight: 600; font-size: 10.5px;
+  text-transform: uppercase; letter-spacing: var(--tracked); text-decoration: none;
+  padding: 4px 10px; border-bottom: 1.5px solid transparent; transition: color .15s, border-color .15s;
+}
+.tab-btn.active { color: var(--g700); border-bottom-color: var(--g700); }
+
+/* ── STAT STRIP ──
+   A masthead stat line, not boxed KPI cards: big numerals, tiny
+   tracked caption, thin hairline dividers between them. */
+.stat-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  padding: 26px 0; margin: 8px 0 6px;
+}
+.stat-chip {
+  text-align: center; cursor: pointer; border-left: 1px solid var(--border);
+}
+.stat-chip:first-child { border-left: none; }
+.stat-num { font-family: var(--fd); font-weight: 800; font-size: 30px; letter-spacing: -0.02em; color: var(--ink); }
+.stat-lbl {
+  font-family: var(--fb); font-size: 10px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: var(--tracked); margin-top: 6px;
+}
+.stat-sub { font-size: 11px; color: var(--ink-lt); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 6px; }
+.stat-detail {
+  grid-column: 1 / -1; background: var(--surface); border: 1px solid var(--border);
+  padding: 12px 16px; font-size: 12.5px; color: var(--ink-lt); display: none; line-height: 1.8;
+  margin-top: 18px; text-align: left;
+}
+.stat-detail.show { display: block; }
+
+/* ── SECTION ── */
+.section { padding: 44px 0 6px; }
+.section:first-of-type { padding-top: 30px; }
+.section-hd { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
+.section-title {
+  font-family: var(--fd); font-weight: 800; font-size: 13px; color: var(--ink);
+  text-transform: uppercase; letter-spacing: var(--tracked);
+}
+.section-note { font-family: var(--fb); font-size: 10.5px; font-weight: 600; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+#boardStatus { color: var(--g600); }
+
+.pill-select {
+  background: none; border: none; border-bottom: 1.5px solid var(--border);
+  padding: 2px 14px 4px 0; font-family: var(--fb); font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--ink-lt); cursor: pointer; outline: none;
+}
+.pill-select:focus { border-color: var(--g500); }
+
+/* ── AVATAR ──
+   Champion (rank 1) gets the brand fill; everyone else is a thin
+   outline in ink - color is reserved for the win. */
+.avatar {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--fm); font-weight: 500; font-size: 10px;
+  color: var(--ink-lt); background: none; border: 1.5px solid var(--border);
+}
+
+/* ── PODIUM ──
+   Champion still carries the one brand color and the biggest scale -
+   but 2nd/3rd now get their own warm tint instead of flat grey, and a
+   medal floats above each avatar (repositioned via absolute + the
+   column as its positioning parent, since the emoji lives later in
+   the DOM inside .podium-block - CSS-only, app.js untouched). Columns
+   pop in on load with a little overshoot instead of just appearing. */
+.podium { display: flex; align-items: flex-start; justify-content: center; gap: 16px; padding: 6px 0 30px; text-align: center; }
+.podium-col {
+  display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 0; max-width: 150px;
+  position: relative; padding-top: 40px;
+  animation: podiumPop .5s var(--ease) backwards;
+}
+.podium-col:nth-child(1) { animation-delay: .05s; }
+.podium-col:nth-child(2) { animation-delay: .18s; }
+.podium-col:nth-child(3) { animation-delay: .12s; }
+@keyframes podiumPop {
+  from { transform: scale(.7) translateY(10px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .podium-col { animation: none; } }
+
+.podium-col .avatar { width: 34px; height: 34px; font-size: 11px; }
+.podium-col.p1 { order: -1; }
+.podium-col.p1 .avatar { width: 44px; height: 44px; font-size: 13px; background: var(--g600); border-color: var(--g600); color: #fff; }
+.podium-col.p2 .avatar { border-color: var(--silver); color: var(--silver); }
+.podium-col.p3 .avatar { border-color: var(--bronze); color: var(--bronze); }
+
+.podium-rankicon {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  font-size: 26px; line-height: 1;
+}
+.podium-col.p1 .podium-rankicon { font-size: 34px; }
+
+.podium-name {
+  font-family: var(--fb); font-weight: 700; font-size: 12px; text-align: center; max-width: 100%;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 10px; color: var(--ink);
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.podium-col.p1 .podium-name { font-size: 13.5px; white-space: normal; overflow: visible; text-overflow: unset; line-height: 1.25; }
+.podium-score { font-family: var(--fd); font-weight: 800; font-size: 17px; color: var(--ink-lt); margin-top: 4px; white-space: nowrap; }
+.podium-col.p1 .podium-score { font-size: 28px; color: var(--g600); }
+.podium-col.p2 .podium-score { color: var(--silver); }
+.podium-col.p3 .podium-score { color: var(--bronze); }
+.podium-block { width: 30px; height: 3px; margin-top: 12px; border-radius: 2px; background: var(--border); }
+.podium-col.p1 .podium-block { width: 40px; height: 4px; background: var(--g600); }
+.podium-col.p2 .podium-block { background: var(--silver); }
+.podium-col.p3 .podium-block { background: var(--bronze); }
+.podium-empty {
+  text-align: center; color: var(--muted); font-size: 12px; text-transform: uppercase;
+  letter-spacing: 0.08em; padding: 30px 14px; width: 100%;
+}
+
+/* ── LEADERBOARD ROWS ──
+   A dotted leader line between name and score, like a menu or table
+   of contents, instead of a filled progress bar. */
+.board { display: flex; flex-direction: column; }
+.board-row {
+  display: flex; align-items: baseline; gap: 12px;
+  padding: 14px 0; border-bottom: 1px dotted var(--border);
+}
+.board-row:last-child { border-bottom: none; }
+.board-rank {
+  width: 20px; flex-shrink: 0;
+  font-family: var(--fm); font-size: 11px; color: var(--muted);
+}
+.board-main { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 10px; overflow: hidden; }
+.board-main .avatar { display: none; }
+.board-name-wrap { display: flex; align-items: baseline; flex: 1; min-width: 0; overflow: hidden; }
+.board-name { font-weight: 600; font-size: 14px; white-space: nowrap; color: var(--ink); }
+.board-track {
+  flex: 1; height: 0; border-bottom: 1px dotted var(--border);
+  margin: 0 8px; align-self: center; overflow: hidden;
+}
+.board-fill { display: none; }
+.board-score {
+  font-family: var(--fm); font-weight: 500; font-size: 13px; flex-shrink: 0; color: var(--ink);
+  min-width: 24px; text-align: right;
+}
+.board-empty {
+  text-align: center; color: var(--muted); font-size: 12px; text-transform: uppercase;
+  letter-spacing: 0.06em; padding: 24px 14px;
+}
+
+/* ── BUTTONS ── */
+.btn3d {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  border: 1.5px solid var(--ink); border-radius: 4px; cursor: pointer; text-decoration: none;
+  font-family: var(--fb); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: var(--tracked);
+  padding: 13px 26px; color: #fff;
+  background: var(--ink); transition: background .18s, color .18s, border-color .18s;
+}
+.btn3d:hover { background: var(--g700); border-color: var(--g700); }
+.btn3d.ghost { background: none; color: var(--ink); }
+.btn3d.ghost:hover { background: var(--ink); color: #fff; }
+.btn3d:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ── SCORE ENTRY ── */
+.entry-card { padding: 0; }
+.entry-form { display: none; gap: 18px; flex-wrap: wrap; align-items: flex-end; margin-top: 24px; }
+.entry-form.show { display: flex; }
+.efield { display: flex; flex-direction: column; gap: 7px; flex: 1; min-width: 110px; }
+.efield label { font-family: var(--fb); font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.efield select, .efield input {
+  background: none; border: none; border-bottom: 1.5px solid var(--border);
+  padding: 6px 0 8px; font-size: 14px; outline: none; transition: border-color .18s;
+}
+.efield select:focus, .efield input:focus { border-color: var(--g600); }
+.efield input[type="number"] { width: 100%; }
+.entry-status { font-size: 12px; margin-top: 14px; }
+.entry-status.ok { color: var(--g600); }
+.entry-status.err { color: var(--red); }
+.entry-hint { font-family: var(--fb); font-size: 11px; color: var(--muted); margin-top: 14px; }
+
+/* ── FOOTER ── */
+.foot {
+  text-align: center; padding: 50px 0 0; font-family: var(--fb); font-weight: 700; font-size: 11px;
+  color: var(--muted); text-transform: uppercase; letter-spacing: var(--tracked);
+}
+.foot-links { display: flex; justify-content: center; gap: 18px; margin-top: 12px; }
+.foot-links a {
+  color: var(--ink-lt); font-family: var(--fb); font-weight: 600; font-size: 10px;
+  text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;
+  border-bottom: 1px solid transparent; padding-bottom: 2px; transition: color .15s, border-color .15s;
+}
+.foot-links a:hover { color: var(--ink); border-bottom-color: var(--ink); }
+
+/* ── COMING SOON (gallery placeholder) ── */
+.soon-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 40px 0; }
+.soon-slot {
+  aspect-ratio: 1; border: 1.5px dashed var(--border); border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--border); font-size: 22px;
+}
+.soon-note {
+  text-align: center; color: var(--ink-lt); font-size: 13px; line-height: 1.7;
+  max-width: 380px; margin: 0 auto;
+}
+
+/* ── RECAP CARD (Home page's "last year" teaser) ── */
+.recap-card { border: 1px solid var(--border); border-radius: 4px; padding: 30px 20px; text-align: center; margin: 34px 0; }
+.recap-year { font-family: var(--fd); font-weight: 800; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: var(--tracked); margin-bottom: 6px; }
+.recap-sub { font-size: 12.5px; color: var(--ink-lt); margin-bottom: 20px; }
+.recap-champ { font-family: var(--fd); font-weight: 800; font-size: 26px; color: var(--g600); letter-spacing: -0.01em; }
+.recap-score { font-family: var(--fm); font-size: 13px; color: var(--ink-lt); margin-top: 6px; }
+
+/* ── SETUP FORM (standalone page, mirrors .mfield) ── */
+.setup-card { max-width: 380px; margin: 30px auto 0; }
+.setup-status { font-size: 12px; color: var(--muted); margin-top: 4px; margin-bottom: 26px; text-align: center; }
+.setup-status.signed-in { color: var(--g600); }
+
+/* ── MODAL ── */
+.veil { position: fixed; inset: 0; background: rgba(15,20,12,0.5); display: flex; align-items: center; justify-content: center; padding: 18px; z-index: 100; }
+.veil[hidden] { display: none; }
+.modal {
+  background: var(--surface); border-radius: 2px; padding: 34px;
+  width: 100%; max-width: 380px; max-height: 90vh; overflow: auto;
+}
+.modal h3 { font-family: var(--fd); font-weight: 800; font-size: 16px; margin-bottom: 8px; color: var(--ink); text-transform: uppercase; letter-spacing: 0.04em; }
+.modal-sub { font-size: 12.5px; color: var(--ink-lt); margin-bottom: 26px; line-height: 1.6; }
+.mfield { margin-bottom: 20px; }
+.mfield label { display: block; font-family: var(--fb); font-size: 10px; font-weight: 600; color: var(--muted); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.08em; }
+.mfield input {
+  width: 100%; background: none; border: none; border-bottom: 1.5px solid var(--border);
+  padding: 6px 0 8px; font-size: 14px; outline: none; transition: border-color .18s;
+}
+.mfield input:focus { border-color: var(--g600); }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--ink); color: #fff; padding: 12px 22px; border-radius: 2px;
+  font-family: var(--fb); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+  opacity: 0; pointer-events: none; transition: all .35s var(--ease); z-index: 999;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 480px) {
+  .entry-form { flex-direction: column; align-items: stretch; }
+  .podium { gap: 14px; }
+}
+
+@media (max-width: 400px) {
+  .nav-mark { font-size: 14px; }
+  .nav-right { gap: 16px; }
+  .hero { padding: 44px 0 24px; }
+  .stat-row { padding: 20px 0; }
+  .stat-num { font-size: 24px; }
+  .podium-col.p1 .podium-score { font-size: 25px; }
+}

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beyond the Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <div class="strip" id="eventStrip">Nationwide Medical Insurance &nbsp;·&nbsp; Sept 27, 2025 &nbsp;·&nbsp; Safari Valley, Adukrom</div>
+
+  <div class="nav">
+    <div class="nav-inner">
+      <a class="nav-mark" href="index.html" style="text-decoration:none;">Beyond the Desk<span class="dot">.</span></a>
+      <div class="nav-right">
+        <a class="profile-btn" id="profileBtn" href="desk.html" title="Sign in / desk">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="hero">
+      <h1 class="hero-title" id="heroTitle">Departmental Games</h1>
+      <p class="hero-sub" id="heroSub">May the best department win</p>
+    </div>
+
+    <div class="recap-card" id="recapCard" style="display: none;">
+      <div class="recap-year" id="recapHeading">2025</div>
+      <div class="recap-sub">That happened. Here's who took it.</div>
+      <div class="recap-champ" id="recapChamp">—</div>
+      <div class="recap-score" id="recapScore">—</div>
+    </div>
+
+    <p class="soon-note" style="margin-bottom: 34px;">
+      Watch out for 2026 — the games are live and the board updates as
+      scores come in.
+    </p>
+
+    <div class="modal-actions" style="justify-content: center; gap: 14px; margin-bottom: 40px;">
+      <a class="btn3d" href="games.html">See the games</a>
+      <a class="btn3d ghost" href="gallery.html">Gallery</a>
+    </div>
+
+    <div class="foot">Have fun out there</div>
+
+  </div>
+
+  <div class="tabbar">
+    <a class="tab-btn active" href="index.html">Home</a>
+    <a class="tab-btn" href="games.html">Leaderboard</a>
+    <a class="tab-btn" href="gallery.html">Gallery</a>
+    <a class="tab-btn" href="desk.html" id="tabDesk" style="display:none;">Desk</a>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    (() => {
+      const { session, loadCsv } = window.BTD;
+
+      const profileBtn = document.getElementById('profileBtn');
+      const s = session();
+      if (s && s.token) { profileBtn.textContent = s.name; profileBtn.classList.add('signed-in'); }
+
+      loadCsv('data/2026/event.csv').then((cached) => {
+        const row = cached.rows[0] || {};
+        if (!row.company) return;
+        document.getElementById('eventStrip').textContent =
+          `${row.company}  ·  ${row.date}  ·  ${row.location}`;
+        if (row.title) document.getElementById('heroTitle').textContent = row.title;
+        if (row.subtitle) document.getElementById('heroSub').textContent = row.subtitle;
+      });
+
+      // A quick "last year" recap: who won 2025, framed as history now
+      // that 2026 is the live year - Home doesn't carry a year toggle,
+      // that lives on the Games page.
+      Promise.all([loadCsv('data/2025/departments.csv'), loadCsv('data/2025/totals.csv')]).then(([dep, totals]) => {
+        if (!totals.rows.length) return;
+        const depMap = {};
+        dep.rows.forEach((r) => { depMap[r.id] = r.name; });
+        const top = totals.rows.slice().sort((a, b) => Number(b.total) - Number(a.total))[0];
+        document.getElementById('recapChamp').textContent = depMap[top.department_id] || top.department_id;
+        document.getElementById('recapScore').textContent = `${top.total} pts`;
+        document.getElementById('recapCard').style.display = '';
+      });
+    })();
+  </script>
+</body>
+</html>

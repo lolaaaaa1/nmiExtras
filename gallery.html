@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gallery — Beyond the Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <div class="strip" id="eventStrip">Nationwide Medical Insurance &nbsp;·&nbsp; Sept 27, 2025 &nbsp;·&nbsp; Safari Valley, Adukrom</div>
+
+  <div class="nav">
+    <div class="nav-inner">
+      <a class="nav-mark" href="index.html" style="text-decoration:none;">Beyond the Desk<span class="dot">.</span></a>
+      <div class="nav-right">
+        <div class="year-toggle" id="yearToggle"></div>
+        <a class="profile-btn" id="profileBtn" href="desk.html" title="Sign in / desk">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="hero" style="padding-bottom: 10px;">
+      <h1 class="hero-title" style="font-size: clamp(28px, 6vw, 46px);">Gallery</h1>
+      <p class="hero-sub" id="gallerySub">Coming soon</p>
+    </div>
+
+    <div class="soon-grid">
+      <div class="soon-slot">🎮</div>
+      <div class="soon-slot">🏆</div>
+      <div class="soon-slot">🎉</div>
+      <div class="soon-slot">📷</div>
+    </div>
+
+    <p class="soon-note" id="galleryNote">
+      Photos from game day will show up here once they're in. Check back
+      after the games - or if you're the one holding the camera, ask the
+      organizer how to get them added.
+    </p>
+
+    <div class="foot">Have fun out there</div>
+
+  </div>
+
+  <div class="tabbar">
+    <a class="tab-btn" href="index.html">Home</a>
+    <a class="tab-btn" href="games.html">Leaderboard</a>
+    <a class="tab-btn active" href="gallery.html">Gallery</a>
+    <a class="tab-btn" href="desk.html" id="tabDesk" style="display:none;">Desk</a>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js" crossorigin="anonymous"></script>
+  <script src="assets/app.js"></script>
+  <script>
+    (() => {
+      const { loadCsv, session, YEARS } = window.BTD;
+      let year = YEARS[0]; // '2026', the live year, by default
+
+      const s = session();
+      if (s && s.token) {
+        const btn = document.getElementById('profileBtn');
+        btn.textContent = s.name;
+        btn.classList.add('signed-in');
+      }
+
+      function renderYearToggle() {
+        const wrap = document.getElementById('yearToggle');
+        wrap.innerHTML = '';
+        YEARS.forEach((y) => {
+          const b = document.createElement('button');
+          b.className = 'year-link' + (year === y ? ' active' : '');
+          b.textContent = y === '2026' ? 'THIS YEAR' : y;
+          b.addEventListener('click', () => { year = y; renderYearToggle(); renderNote(); });
+          wrap.appendChild(b);
+        });
+      }
+
+      function renderNote() {
+        document.getElementById('galleryNote').textContent = year === '2025'
+          ? "The 2025 gallery isn't digitized yet - if you have photos from that day, send them to the organizer."
+          : "Photos from this year's game day will show up here once they're in. Check back after the games - or if you're the one holding the camera, ask the organizer how to get them added.";
+      }
+
+      loadCsv('data/2026/event.csv').then((cached) => {
+        const row = cached.rows[0] || {};
+        if (row.company) {
+          document.getElementById('eventStrip').textContent =
+            `${row.company}  ·  ${row.date}  ·  ${row.location}`;
+        }
+      });
+
+      renderYearToggle();
+      renderNote();
+      if (window.twemoji) window.twemoji.parse(document.body);
+    })();
+  </script>
+</body>
+</html>
