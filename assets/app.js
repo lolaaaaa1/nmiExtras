@@ -310,8 +310,21 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",Department
     if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
     return (words[0][0] + words[1][0]).toUpperCase();
   }
+  // One color per department, so identity reads at a glance in every
+  // list (leaderboard, by-game breakdown) - deliberately muted/dark
+  // tones (not neon) to stay in the app's "adult" register, cycling by
+  // the numeric suffix on the department id so it's stable regardless
+  // of row order.
+  const DEPT_COLORS = [
+    '#6640a3', '#a34068', '#a37440', '#407ba3', '#4a8a5a',
+    '#a35440', '#5a5aa3', '#3f8a8a', '#8a6a3f', '#6b4f8a',
+  ];
+  function deptColor(id) {
+    const n = parseInt(String(id).replace(/\D/g, ''), 10) || 0;
+    return DEPT_COLORS[n % DEPT_COLORS.length];
+  }
   function avatarHtml(dep) {
-    return `<div class="avatar">${initials(dep.name)}</div>`;
+    return `<div class="avatar" style="--dept-color:${deptColor(dep.id)}">${initials(dep.name)}</div>`;
   }
 
   function boardRow(rank, dep, value, max) {

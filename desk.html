@@ -59,6 +59,18 @@
         </div>
       </div>
 
+      <div class="section" id="clearSection">
+        <div class="setup-card" style="max-width: 460px; text-align: center;">
+          <div class="section-note" style="margin-bottom: 14px;">
+            Wipes every 2026 score - the leaderboard and Home go back to
+            "watch out for 2026" until someone records a new one. Games
+            (12) and departments (10) stay - just the scores clear.
+          </div>
+          <button class="btn3d danger" id="clearScores">Clear records</button>
+          <div class="entry-status" id="clearStatus" style="text-align: center;"></div>
+        </div>
+      </div>
+
       <div class="section" id="eventSection">
         <div class="section-hd"><div class="section-title">Event details</div></div>
         <div class="section-note" style="margin-bottom: 20px;">
@@ -224,6 +236,26 @@
         } catch (e) {
           st.classList.add('err');
           st.textContent = e.message || 'Could not save.';
+        }
+      });
+
+      byId('clearScores').addEventListener('click', async () => {
+        const st = byId('clearStatus');
+        const s = session();
+        if (!s || !s.token) { toast('Sign in first.'); return; }
+        const ok = confirm(`Clear every recorded ${YEAR} score? The board goes back to "watch out for 2026" until someone records a new one. This stays in the git history, but it's a real change everyone will see immediately.`);
+        if (!ok) return;
+        st.className = 'entry-status';
+        st.textContent = 'Clearing…';
+        try {
+          const path = `data/${YEAR}/scores.csv`;
+          await saveCsv(path, ['game_id', 'department_id', 'score'], [], `Beyond the Desk: ${s.name} cleared ${YEAR} scores`);
+          st.classList.add('ok');
+          st.textContent = 'Cleared.';
+          toast('All scores cleared.');
+        } catch (e) {
+          st.classList.add('err');
+          st.textContent = e.message || 'Could not clear.';
         }
       });
 

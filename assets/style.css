@@ -240,8 +240,12 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
   width: 20px; flex-shrink: 0;
   font-family: var(--fm); font-size: 11px; color: var(--muted);
 }
-.board-main { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 10px; overflow: hidden; }
-.board-main .avatar { display: none; }
+.board-main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; overflow: hidden; }
+/* Each department keeps one color (set inline as --dept-color, see
+   avatarHtml() in app.js) everywhere it shows up in a list - the
+   podium avatars are untouched, since rank there is a deliberate
+   green/silver/bronze signal, not identity. */
+.board-row .avatar { background: var(--dept-color, var(--g600)); border: none; color: #fff; }
 .board-name-wrap { display: flex; align-items: baseline; flex: 1; min-width: 0; overflow: hidden; }
 .board-name { font-weight: 600; font-size: 14px; white-space: nowrap; color: var(--ink); }
 .board-track {
@@ -261,14 +265,16 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
 /* ── BUTTONS ── */
 .btn3d {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  border: 1.5px solid var(--ink); border-radius: 4px; cursor: pointer; text-decoration: none;
+  border: 1.5px solid var(--g700); border-radius: 4px; cursor: pointer; text-decoration: none;
   font-family: var(--fb); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: var(--tracked);
   padding: 13px 26px; color: #fff;
-  background: var(--ink); transition: background .18s, color .18s, border-color .18s;
+  background: var(--g700); transition: background .18s, color .18s, border-color .18s;
 }
-.btn3d:hover { background: var(--g700); border-color: var(--g700); }
-.btn3d.ghost { background: none; color: var(--ink); }
+.btn3d:hover { background: var(--g500); border-color: var(--g500); }
+.btn3d.ghost { background: none; color: var(--ink); border-color: var(--ink); }
 .btn3d.ghost:hover { background: var(--ink); color: #fff; }
+.btn3d.danger { background: none; color: var(--red); border-color: var(--red); }
+.btn3d.danger:hover { background: var(--red); color: #fff; }
 .btn3d:disabled { opacity: .45; cursor: not-allowed; }
 
 /* ── SCORE ENTRY ── */
@@ -319,6 +325,12 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
 .recap-sub { font-size: 12.5px; color: var(--ink-lt); margin-bottom: 20px; }
 .recap-champ { font-family: var(--fd); font-weight: 800; font-size: 26px; color: var(--g600); letter-spacing: -0.01em; }
 .recap-score { font-family: var(--fm); font-size: 13px; color: var(--ink-lt); margin-top: 6px; }
+.live-dot {
+  display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--g500); margin-right: 6px; animation: livePulse 1.4s ease-in-out infinite;
+}
+@keyframes livePulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
 
 /* ── SETUP FORM (standalone page, mirrors .mfield) ── */
 .setup-card { max-width: 380px; margin: 30px auto 0; }
