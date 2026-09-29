@@ -336,7 +336,7 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
 
   function boardRow(rank, dep, value, max) {
     const pct = max > 0 ? Math.round((value / max) * 100) : 0;
-    const row = el('div', 'board-row');
+    const row = el('div', 'board-row' + (value === 0 ? ' zero' : ''));
     row.innerHTML = `
       <div class="board-rank">${rank}</div>
       <div class="board-main">
@@ -346,7 +346,7 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
           <div class="board-track"><div class="board-fill" style="width:${pct}%"></div></div>
         </div>
       </div>
-      <div class="board-score">${value}</div>
+      <div class="board-score">${value === 0 ? '—' : value}</div>
     `;
     return row;
   }
