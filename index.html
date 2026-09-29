@@ -54,7 +54,7 @@
     <div class="recap-card" id="liveCard" style="display: none;">
       <div class="recap-year"><span class="live-dot"></span>2026 · Live</div>
       <div class="recap-sub">Games are underway. Here's who's leading right now.</div>
-      <div class="recap-champ" id="liveChamp">—</div>
+      <div class="recap-champ" id="liveChamp" style="padding-top: 0;">—</div>
       <div class="recap-score" id="liveScore">—</div>
     </div>
 
@@ -107,8 +107,12 @@
       // Crown anchors to the actual first letter of the champion's name
       // (wrapped in its own span) instead of a guessed pixel offset -
       // so it really sits on that letter, not just "roughly left of
-      // center," whatever the name turns out to be.
-      function setChampion(el, name) {
+      // center," whatever the name turns out to be. The crown means
+      // "decided, final" - only 2025 (over) gets it. 2026 is still
+      // live, so its current leader shows plain, no crown, so it
+      // doesn't read as "this is already won."
+      function setChampion(el, name, { crown = true } = {}) {
+        if (!crown) { el.textContent = name; return; }
         const first = name.charAt(0);
         const rest = name.slice(1);
         el.innerHTML = `<span class="champ-first">${first}<span class="crown">👑</span></span>${rest}`;
@@ -171,7 +175,7 @@
         scores.rows.forEach((r) => { sums[r.department_id] = (sums[r.department_id] || 0) + (Number(r.score) || 0); });
         const top = dep.rows.map((d) => ({ name: d.name, total: sums[d.id] || 0 })).sort((a, b) => b.total - a.total)[0];
         if (!top || top.total <= 0) return;
-        setChampion(document.getElementById('liveChamp'), top.name);
+        setChampion(document.getElementById('liveChamp'), top.name, { crown: false });
         document.getElementById('liveCard').style.display = '';
         document.getElementById('teaserNote').style.display = 'none';
         countUp(document.getElementById('liveScore'), top.total, ' pts');
