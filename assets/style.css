@@ -61,6 +61,8 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
   font-family: var(--fb); font-size: 10.5px; font-weight: 600;
   text-transform: uppercase; letter-spacing: var(--tracked);
 }
+.strip a { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
+.strip a:hover { opacity: .85; }
 
 /* ── NAV ── */
 .nav { background: var(--surface); border-bottom: 1px solid var(--border); }
