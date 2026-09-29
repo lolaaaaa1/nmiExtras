@@ -420,6 +420,13 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
 .itin-time { font-family: var(--fm); font-size: 11.5px; color: var(--muted); width: 74px; flex-shrink: 0; }
 .itin-activity { font-size: 13px; color: var(--ink); font-weight: 600; }
 
+.leading-tag {
+  display: inline-block; font-family: var(--fb); font-weight: 700; font-size: 10px;
+  color: var(--g600); text-transform: uppercase; letter-spacing: var(--tracked);
+  background: var(--g50); border: 1px solid var(--g100); border-radius: 20px;
+  padding: 3px 10px; margin-bottom: 10px;
+}
+
 /* ── RECAP CARD (Home page's "last year" teaser) ── */
 .recap-card {
   border: 1px solid var(--border); border-radius: 4px; padding: 30px 20px; text-align: center; margin: 34px 0;
