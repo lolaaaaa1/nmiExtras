@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feedback — Beyond the Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <div class="strip" id="eventStrip">Nationwide Medical Insurance &nbsp;·&nbsp; Sept 27, 2025 &nbsp;·&nbsp; Safari Valley, Adukrom</div>
+
+  <div class="nav">
+    <div class="nav-inner">
+      <a class="nav-mark" href="index.html" style="text-decoration:none;">Beyond the Desk<span class="dot">.</span></a>
+      <div class="nav-right">
+        <a class="profile-btn" href="index.html">Home</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="hero" style="padding-bottom: 10px;">
+      <h1 class="hero-title" style="font-size: clamp(28px, 6vw, 46px);">Feedback</h1>
+      <p class="hero-sub">Tell us how the trip went</p>
+    </div>
+
+    <div class="setup-card">
+      <div class="modal-sub" style="text-align:center; margin-bottom: 20px;">
+        This opens your own mail app with a message already addressed and
+        filled in - nothing is stored here, it just goes straight to the
+        organizers.
+      </div>
+
+      <div class="mfield"><label>Your name (optional)</label><input id="fbName" placeholder="e.g. Ama"></div>
+      <div class="mfield"><label>Your feedback</label><textarea id="fbMessage" rows="6" style="width:100%; background:none; border:1.5px solid var(--border); border-radius:8px; padding:10px 12px; font-size:13.5px; outline:none; font-family:inherit;" placeholder="What worked, what didn't, what to do differently next time..."></textarea></div>
+      <div class="modal-actions" style="justify-content: center;">
+        <button class="btn3d" id="fbSend">Send feedback</button>
+      </div>
+      <div class="entry-status" id="fbStatus" style="text-align: center;"></div>
+    </div>
+
+    <div class="foot">Have fun</div>
+
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    (() => {
+      const { loadCsv, toast } = window.BTD;
+      const FEEDBACK_TO = ['philiptwum@nationwidemh.com', 'jeromejacaboba@nationwidemh.com'];
+
+      loadCsv('data/2026/event.csv').then((cached) => {
+        const row = cached.rows[0] || {};
+        if (row.company) {
+          document.getElementById('eventStrip').textContent =
+            `${row.company}  ·  ${row.date}  ·  ${row.location}`;
+        }
+      });
+
+      document.getElementById('fbSend').addEventListener('click', () => {
+        const status = document.getElementById('fbStatus');
+        const name = document.getElementById('fbName').value.trim();
+        const message = document.getElementById('fbMessage').value.trim();
+        if (!message) { toast('Write something first.'); return; }
+        const subject = encodeURIComponent('Beyond the Desk - trip feedback');
+        const body = encodeURIComponent(`${message}\n\n— ${name || 'Anonymous'}`);
+        const href = `mailto:${FEEDBACK_TO.join(',')}?subject=${subject}&body=${body}`;
+        window.location.href = href;
+        status.className = 'entry-status ok';
+        status.textContent = 'Opening your mail app…';
+      });
+    })();
+  </script>
+</body>
+</html>
