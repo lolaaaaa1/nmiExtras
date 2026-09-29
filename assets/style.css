@@ -265,7 +265,7 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
 .board-name-wrap { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; overflow: hidden; }
 .board-name {
   font-weight: 600; font-size: 13px; white-space: nowrap; color: var(--ink);
-  max-width: 40%; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0;
+  width: 92px; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0;
 }
 /* Real bar chart, not a leader-line: each department's own color (the
    validated 10-hue set, assigned by id - see DEPT_COLORS in app.js)
@@ -380,7 +380,7 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
 .marquee-wrap { overflow: hidden; padding: 10px 0; margin: 6px 0 40px; }
 .marquee-track {
   display: flex; gap: 14px; width: max-content;
-  animation: marqueeScroll 22s linear infinite;
+  animation: marqueeScroll 11s linear infinite;
 }
 .marquee-wrap:hover .marquee-track { animation-play-state: paused; }
 .marquee-card {

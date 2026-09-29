@@ -283,7 +283,10 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",Department
     const ev = ctx.event;
     if (!ev || !ev.company) return;
     const strip = byId('eventStrip');
-    if (strip) strip.textContent = `${ev.company}  ·  ${ev.date}  ·  ${ev.location}`;
+    if (strip) {
+      const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.location)}`;
+      strip.innerHTML = `${ev.company}  ·  ${ev.date}  ·  <a href="${mapHref}" target="_blank" rel="noopener">${ev.location}</a>`;
+    }
     const title = byId('heroTitle');
     if (title) title.textContent = ev.title;
     const sub = byId('heroSub');
