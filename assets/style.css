@@ -394,6 +394,30 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
 }
 @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
 
+/* ── ACTIVITY ROW (Home) ──
+   The trip is the headline now, not any one activity - Games and
+   Photos get equal-weight cards here rather than one of them being
+   the page's hero title. */
+.activity-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 28px 0; }
+.activity-card {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 20px 12px; border: 1px solid var(--border); border-radius: 8px;
+  text-decoration: none; color: var(--ink); transition: border-color .18s, transform .18s;
+}
+.activity-card:hover { border-color: var(--g500); transform: translateY(-2px); }
+.activity-icon { font-size: 28px; }
+.activity-label { font-family: var(--fd); font-weight: 700; font-size: 12.5px; text-align: center; }
+
+/* ── ITINERARY (Home) ── */
+.itinerary { margin-bottom: 34px; }
+.itin-row {
+  display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px dotted var(--border);
+  align-items: baseline;
+}
+.itin-row:last-child { border-bottom: none; }
+.itin-time { font-family: var(--fm); font-size: 11.5px; color: var(--muted); width: 74px; flex-shrink: 0; }
+.itin-activity { font-size: 13px; color: var(--ink); font-weight: 600; }
+
 /* ── RECAP CARD (Home page's "last year" teaser) ── */
 .recap-card {
   border: 1px solid var(--border); border-radius: 4px; padding: 30px 20px; text-align: center; margin: 34px 0;

@@ -24,9 +24,25 @@
   <div class="wrap">
 
     <div class="hero">
-      <h1 class="hero-title" id="heroTitle">Departmental Games</h1>
+      <h1 class="hero-title" id="heroTitle">NMI Staff Trip</h1>
       <p class="hero-sub" id="heroSub">May the best department win</p>
     </div>
+
+    <div class="activity-row">
+      <a class="activity-card" href="games.html">
+        <span class="activity-icon">🎮</span>
+        <span class="activity-label">Departmental Games</span>
+      </a>
+      <a class="activity-card" href="gallery.html">
+        <span class="activity-icon">📸</span>
+        <span class="activity-label">Photos</span>
+      </a>
+    </div>
+
+    <div class="section-hd" style="margin-top: 8px;">
+      <div class="section-title">Itinerary</div>
+    </div>
+    <div class="itinerary" id="itinerary"></div>
 
     <div class="recap-card" id="recapCard" style="display: none;">
       <div class="recap-year" id="recapHeading">2025</div>
@@ -117,10 +133,23 @@
       loadCsv('data/2026/event.csv').then((cached) => {
         const row = cached.rows[0] || {};
         if (!row.company) return;
-        document.getElementById('eventStrip').textContent =
-          `${row.company}  ·  ${row.date}  ·  ${row.location}`;
-        if (row.title) document.getElementById('heroTitle').textContent = row.title;
+        const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(row.location)}`;
+        document.getElementById('eventStrip').innerHTML =
+          `${row.company}  ·  ${row.date}  ·  <a href="${mapHref}" target="_blank" rel="noopener">${row.location}</a>`;
+        if (row.trip_name) document.getElementById('heroTitle').textContent = row.trip_name;
         if (row.subtitle) document.getElementById('heroSub').textContent = row.subtitle;
+        if (row.title) document.querySelector('.activity-card .activity-label').textContent = row.title;
+      });
+
+      loadCsv('data/2026/itinerary.csv').then((cached) => {
+        const wrap = document.getElementById('itinerary');
+        if (!cached.rows.length) { wrap.innerHTML = '<div class="soon-note">No itinerary posted yet.</div>'; return; }
+        wrap.innerHTML = cached.rows.map((r) => `
+          <div class="itin-row">
+            <div class="itin-time">${r.time}</div>
+            <div class="itin-activity">${r.activity}</div>
+          </div>
+        `).join('');
       });
 
       // A quick "last year" recap: who won 2025, framed as history now

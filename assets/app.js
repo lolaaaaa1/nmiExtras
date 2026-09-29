@@ -112,8 +112,8 @@ D8,12
 D9,21
 D10,18
 `,
-    'data/2025/event.csv': `company,date,location,title,subtitle
-Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",Departmental Games,May the best department win
+    'data/2025/event.csv': `company,date,location,trip_name,title,subtitle
+Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff Trip 2025,Departmental Games,May the best department win
 `,
     'data/2026/departments.csv': `id,name
 D1,Admin & HR
@@ -143,8 +143,8 @@ G12,Flip Da Bottle,1
 `,
     'data/2026/scores.csv': `game_id,department_id,score
 `,
-    'data/2026/event.csv': `company,date,location,title,subtitle
-Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",Departmental Games,May the best department win
+    'data/2026/event.csv': `company,date,location,trip_name,title,subtitle
+Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff Trip 2026,Departmental Games,May the best department win
 `,
   };
 
