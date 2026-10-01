@@ -121,13 +121,22 @@
         el.innerHTML = `<span class="champ-first">${first}<span class="crown">👑</span></span>${rest}`;
       }
 
-      // Real event photos, dropped in scrollPictures/ (1.jpeg..9.jpeg).
-      const MARQUEE_PHOTOS = Array.from({ length: 9 }, (_, i) => `scrollPictures/${i + 1}.jpeg`);
+      // Same approved photo list Desk manages for the Gallery page (a
+      // Cloudinary URL or a galleryPhotos/<year>/ filename per line) -
+      // one list feeds both places. Falls back to the original fixed
+      // set only if nothing's been approved yet, so Home never goes
+      // blank before Desk has a real list.
+      const FALLBACK_PHOTOS = Array.from({ length: 9 }, (_, i) => `scrollPictures/${i + 1}.jpeg`);
       const track = document.getElementById('marqueeTrack');
-      const cardsHtml = MARQUEE_PHOTOS.map(
-        (src) => `<div class="marquee-card"><img src="${src}" alt="" loading="lazy"></div>`
-      ).join('');
-      track.innerHTML = cardsHtml + cardsHtml; // doubled for the seamless -50% loop
+      loadCsv('data/2026/gallery.csv').then((cached) => {
+        const list = cached.rows.length
+          ? cached.rows.map((r) => (/^https?:\/\//.test(r.filename) ? r.filename : `galleryPhotos/2026/${r.filename}`))
+          : FALLBACK_PHOTOS;
+        const cardsHtml = list.map(
+          (src) => `<div class="marquee-card"><img src="${src}" alt="" loading="lazy"></div>`
+        ).join('');
+        track.innerHTML = cardsHtml + cardsHtml; // doubled for the seamless -50% loop
+      });
 
       const profileBtn = document.getElementById('profileBtn');
       const s = session();
