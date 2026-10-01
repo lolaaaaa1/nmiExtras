@@ -107,6 +107,25 @@
         </div>
       </div>
 
+      <div class="section" id="gamesSection">
+        <div class="section-hd"><div class="section-title">Games</div></div>
+        <div class="section-note" style="margin-bottom: 20px;">
+          One game per line. Matched by exact name against the current list,
+          so reordering or removing a line is safe - but renaming a game is
+          treated as removing the old one and adding a new one, so its past
+          scores won't carry over. Live year only.
+        </div>
+        <div class="setup-card" style="max-width: 460px;">
+          <div class="mfield">
+            <textarea id="gamesText" rows="8" style="width:100%; background:none; border:1.5px solid var(--border); border-radius:8px; padding:10px 12px; font-family:var(--fm); font-size:12.5px; outline:none;"></textarea>
+          </div>
+          <div class="modal-actions" style="justify-content: center;">
+            <button class="btn3d" id="gamesSave">Save games</button>
+          </div>
+          <div class="entry-status" id="gamesStatus" style="text-align: center;"></div>
+        </div>
+      </div>
+
     </div>
 
     <div class="foot">Have fun</div>
@@ -316,9 +335,46 @@
         }
       });
 
+      async function loadGames() {
+        const cached = await loadCsv(`data/${YEAR}/games.csv`);
+        byId('gamesText').value = cached.rows.map((r) => r.name).join('\n');
+      }
+
+      byId('gamesSave').addEventListener('click', async () => {
+        const st = byId('gamesStatus');
+        const s = session();
+        if (!s || !s.token) { toast('Sign in first.'); return; }
+        st.className = 'entry-status';
+        st.textContent = 'Saving…';
+        try {
+          const path = `data/${YEAR}/games.csv`;
+          const cached = await loadCsv(path);
+          const existingByName = {};
+          cached.rows.forEach((r) => { existingByName[r.name] = r; });
+          let maxId = cached.rows.reduce((m, r) => Math.max(m, parseInt(String(r.id).replace(/\D/g, ''), 10) || 0), 0);
+
+          const names = byId('gamesText').value.split('\n').map((l) => l.trim()).filter(Boolean);
+          const rows = names.map((name) => {
+            const existing = existingByName[name];
+            if (existing) return existing;
+            maxId += 1;
+            return { id: `G${maxId}`, name, has_breakdown: '1' };
+          });
+
+          await saveCsv(path, ['id', 'name', 'has_breakdown'], rows, `Beyond the Desk: ${s.name} updated the games list`);
+          st.classList.add('ok');
+          st.textContent = 'Saved.';
+          toast('Games saved.');
+        } catch (e) {
+          st.classList.add('err');
+          st.textContent = e.message || 'Could not save.';
+        }
+      });
+
       refreshSession();
       loadEvent();
       loadItinerary();
+      loadGames();
     })();
   </script>
 </body>
