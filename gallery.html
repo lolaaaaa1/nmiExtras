@@ -29,15 +29,18 @@
       <p class="hero-sub" id="gallerySub">Coming soon</p>
     </div>
 
-    <div class="modal-actions" style="justify-content: center; margin-bottom: 24px;">
-      <a class="btn3d" href="https://docs.google.com/forms/d/e/1FAIpQLSdwhMq-brH-mGsix7NKa07k6jbj0gW_TJ2EwT6ZmWyTda-WGQ/viewform" target="_blank" rel="noopener">Upload a photo</a>
+    <div class="setup-card" style="max-width: 460px; margin-bottom: 30px;">
+      <div class="modal-sub" style="text-align:center; margin-bottom: 16px;">
+        Upload right here - no sign-in, stays on this page. An admin
+        reviews before anything shows up in the gallery below.
+      </div>
+      <div class="mfield"><label>Your name (optional)</label><input id="upName" placeholder="e.g. Ama"></div>
+      <div class="mfield"><label>Photo</label><input id="upFile" type="file" accept="image/*" style="width:100%; font-size:12.5px;"></div>
+      <div class="modal-actions" style="justify-content: center;">
+        <button class="btn3d" id="upSend">Upload</button>
+      </div>
+      <div class="entry-status" id="upStatus" style="text-align: center;"></div>
     </div>
-    <p class="soon-note" style="margin-top: -14px; margin-bottom: 30px;">
-      Opens in a new tab - the file-upload question needs you signed into
-      Google, and Google won't let that sign-in happen inside an embedded
-      page (tried embedding it the same way as Feedback; it just showed a
-      sign-in wall with no way through).
-    </p>
 
     <div class="photo-grid" id="photoGrid" style="display: none;"></div>
 
@@ -95,6 +98,32 @@
           wrap.appendChild(b);
         });
       }
+
+      const UPLOAD_ENDPOINT = 'https://formspree.io/f/REPLACE_WITH_FORMSPREE_ID';
+
+      document.getElementById('upSend').addEventListener('click', async () => {
+        const status = document.getElementById('upStatus');
+        const name = document.getElementById('upName').value.trim();
+        const fileInput = document.getElementById('upFile');
+        const file = fileInput.files[0];
+        if (!file) { window.BTD.toast('Pick a photo first.'); return; }
+        status.className = 'entry-status';
+        status.textContent = 'Uploading…';
+        try {
+          const body = new FormData();
+          body.append('name', name || 'Anonymous');
+          body.append('photo', file);
+          const res = await fetch(UPLOAD_ENDPOINT, { method: 'POST', body, headers: { Accept: 'application/json' } });
+          if (!res.ok) throw new Error('Upload failed - try again.');
+          status.classList.add('ok');
+          status.textContent = 'Uploaded - thanks! An admin will review it soon.';
+          document.getElementById('upName').value = '';
+          fileInput.value = '';
+        } catch (e) {
+          status.classList.add('err');
+          status.textContent = e.message || 'Could not upload.';
+        }
+      });
 
       function renderNote() {
         document.getElementById('galleryNote').textContent = year === '2025'
