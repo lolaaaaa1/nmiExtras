@@ -121,17 +121,18 @@
         el.innerHTML = `<span class="champ-first">${first}<span class="crown">👑</span></span>${rest}`;
       }
 
-      // Same approved photo list Desk manages for the Gallery page (a
-      // Cloudinary URL or a galleryPhotos/<year>/ filename per line) -
-      // one list feeds both places. Falls back to the original fixed
-      // set only if nothing's been approved yet, so Home never goes
-      // blank before Desk has a real list.
-      const FALLBACK_PHOTOS = Array.from({ length: 9 }, (_, i) => `scrollPictures/${i + 1}.jpeg`);
+      // Its own list, separate from the Gallery page's (a Cloudinary URL
+      // or a galleryPhotos/<year>/ filename per line, managed in Desk's
+      // own "Marquee photos" box) - Home can feature a different set
+      // than the full Gallery. Always shows 10 total: starts as the
+      // fixed default set, and each link added in Desk swaps in for the
+      // oldest photo still in the lineup, one at a time, instead of
+      // wiping the whole set out at once.
+      const FALLBACK_PHOTOS = Array.from({ length: 10 }, (_, i) => `scrollPictures/${i + 1}.jpeg`);
       const track = document.getElementById('marqueeTrack');
-      loadCsv('data/2026/gallery.csv').then((cached) => {
-        const list = cached.rows.length
-          ? cached.rows.map((r) => (/^https?:\/\//.test(r.filename) ? r.filename : `galleryPhotos/2026/${r.filename}`))
-          : FALLBACK_PHOTOS;
+      loadCsv('data/2026/marquee.csv').then((cached) => {
+        const added = cached.rows.map((r) => (/^https?:\/\//.test(r.filename) ? r.filename : `galleryPhotos/2026/${r.filename}`));
+        const list = [...FALLBACK_PHOTOS, ...added].slice(-10);
         const cardsHtml = list.map(
           (src) => `<div class="marquee-card"><img src="${src}" alt="" loading="lazy"></div>`
         ).join('');
