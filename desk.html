@@ -125,6 +125,42 @@
         </div>
       </div>
 
+      <div class="section" id="teamsSection">
+        <div class="section-hd"><div class="section-title">Teams</div></div>
+        <div class="section-note" style="margin-bottom: 20px;">
+          One team per line, as <code>team name | departments</code> - e.g.
+          <code>Team 1 | CR &amp; Accounts &amp; Actuarial &amp; BI</code>. Shown on the
+          Leaderboard's Pairings section, live year only.
+        </div>
+        <div class="setup-card" style="max-width: 460px;">
+          <div class="mfield">
+            <textarea id="teamsText" rows="6" style="width:100%; background:none; border:1.5px solid var(--border); border-radius:8px; padding:10px 12px; font-family:var(--fm); font-size:12.5px; outline:none;"></textarea>
+          </div>
+          <div class="modal-actions" style="justify-content: center;">
+            <button class="btn3d" id="teamsSave">Save teams</button>
+          </div>
+          <div class="entry-status" id="teamsStatus" style="text-align: center;"></div>
+        </div>
+      </div>
+
+      <div class="section" id="pairingsSection">
+        <div class="section-hd"><div class="section-title">Game pairings</div></div>
+        <div class="section-note" style="margin-bottom: 20px;">
+          One matchup per line, as <code>game | team A | team B</code> - e.g.
+          <code>GAME 1 | Call Center &amp; Membership &amp; QA | CR &amp; Accounts &amp; Actuarial &amp; BI</code>.
+          Shown on the Leaderboard's Pairings section, live year only.
+        </div>
+        <div class="setup-card" style="max-width: 460px;">
+          <div class="mfield">
+            <textarea id="pairingsText" rows="6" style="width:100%; background:none; border:1.5px solid var(--border); border-radius:8px; padding:10px 12px; font-family:var(--fm); font-size:12.5px; outline:none;"></textarea>
+          </div>
+          <div class="modal-actions" style="justify-content: center;">
+            <button class="btn3d" id="pairingsSave">Save pairings</button>
+          </div>
+          <div class="entry-status" id="pairingsStatus" style="text-align: center;"></div>
+        </div>
+      </div>
+
       <div class="section" id="galleryPhotosSection">
         <div class="section-hd"><div class="section-title">Gallery photos</div></div>
         <div class="section-note" style="margin-bottom: 20px;">
@@ -407,6 +443,68 @@
         }
       });
 
+      async function loadTeamsList() {
+        const cached = await loadCsv(`data/${YEAR}/teams.csv`);
+        byId('teamsText').value = cached.rows.map((r) => `${r.team} | ${r.departments}`).join('\n');
+      }
+
+      byId('teamsSave').addEventListener('click', async () => {
+        const st = byId('teamsStatus');
+        const s = session();
+        if (!s || !s.token) { toast('Sign in first.'); return; }
+        st.className = 'entry-status';
+        st.textContent = 'Saving…';
+        try {
+          const rows = byId('teamsText').value
+            .split('\n')
+            .map((line) => line.trim())
+            .filter(Boolean)
+            .map((line) => {
+              const [team, ...rest] = line.split('|');
+              return { team: (team || '').trim(), departments: rest.join('|').trim() };
+            })
+            .filter((r) => r.team || r.departments);
+          await saveCsv(`data/${YEAR}/teams.csv`, ['team', 'departments'], rows, `Beyond the Desk: ${s.name} updated teams`);
+          st.classList.add('ok');
+          st.textContent = 'Saved.';
+          toast('Teams saved.');
+        } catch (e) {
+          st.classList.add('err');
+          st.textContent = e.message || 'Could not save.';
+        }
+      });
+
+      async function loadPairingsList() {
+        const cached = await loadCsv(`data/${YEAR}/pairings.csv`);
+        byId('pairingsText').value = cached.rows.map((r) => `${r.game} | ${r.team_a} | ${r.team_b}`).join('\n');
+      }
+
+      byId('pairingsSave').addEventListener('click', async () => {
+        const st = byId('pairingsStatus');
+        const s = session();
+        if (!s || !s.token) { toast('Sign in first.'); return; }
+        st.className = 'entry-status';
+        st.textContent = 'Saving…';
+        try {
+          const rows = byId('pairingsText').value
+            .split('\n')
+            .map((line) => line.trim())
+            .filter(Boolean)
+            .map((line) => {
+              const [game, teamA, ...rest] = line.split('|');
+              return { game: (game || '').trim(), team_a: (teamA || '').trim(), team_b: rest.join('|').trim() };
+            })
+            .filter((r) => r.game || r.team_a || r.team_b);
+          await saveCsv(`data/${YEAR}/pairings.csv`, ['game', 'team_a', 'team_b'], rows, `Beyond the Desk: ${s.name} updated game pairings`);
+          st.classList.add('ok');
+          st.textContent = 'Saved.';
+          toast('Pairings saved.');
+        } catch (e) {
+          st.classList.add('err');
+          st.textContent = e.message || 'Could not save.';
+        }
+      });
+
       async function loadGalleryList() {
         const cached = await loadCsv(`data/${YEAR}/gallery.csv`);
         byId('galleryText').value = cached.rows.map((r) => r.filename).join('\n');
@@ -467,6 +565,8 @@
       loadGames();
       loadGalleryList();
       loadMarqueeList();
+      loadTeamsList();
+      loadPairingsList();
     })();
   </script>
 </body>

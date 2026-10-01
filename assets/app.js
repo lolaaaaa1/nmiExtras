@@ -253,11 +253,13 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
   }
 
   async function loadYearData(year) {
-    const [dep, games, scores, event] = await Promise.all([
+    const [dep, games, scores, event, teams, pairings] = await Promise.all([
       loadCsv(`data/${year}/departments.csv`),
       loadCsv(`data/${year}/games.csv`),
       loadCsv(`data/${year}/scores.csv`),
       loadCsv(`data/${year}/event.csv`),
+      loadCsv(`data/${year}/teams.csv`),
+      loadCsv(`data/${year}/pairings.csv`),
     ]);
     let totals = null;
     if (year === '2025') totals = await loadCsv(`data/${year}/totals.csv`);
@@ -276,7 +278,7 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
     }
     totalsByDept.sort((a, b) => b.total - a.total);
 
-    return { dep, games, scores, totalsByDept, depMap, event: event.rows[0] || {} };
+    return { dep, games, scores, totalsByDept, depMap, event: event.rows[0] || {}, teams, pairings };
   }
 
   function renderEvent(ctx) {
@@ -468,6 +470,37 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
     items.forEach((it, i) => wrap.appendChild(boardRow(i + 1, it.dep, it.value, max)));
   }
 
+  // Teams group several departments into one side for the games (e.g.
+  // "Team 1" = CR & Accounts & Actuarial & BI); pairings say which team
+  // faces which, per game. Both are optional - the whole section hides
+  // if neither file has rows yet (e.g. not set up for a given year).
+  function renderPairingsSection(ctx) {
+    const section = byId('pairings-section');
+    if (!section) return;
+    const hasData = (ctx.teams && ctx.teams.rows.length) || (ctx.pairings && ctx.pairings.rows.length);
+    section.style.display = hasData ? '' : 'none';
+    if (!hasData) return;
+
+    const teamsWrap = byId('teamsGrid');
+    teamsWrap.innerHTML = '';
+    ctx.teams.rows.forEach((t) => {
+      const card = el('div', 'team-card');
+      card.innerHTML = `<div class="team-card-name">${t.team}</div><div class="team-card-deps">${t.departments}</div>`;
+      teamsWrap.appendChild(card);
+    });
+
+    const pairingsWrap = byId('pairingsList');
+    pairingsWrap.innerHTML = '';
+    ctx.pairings.rows.forEach((p) => {
+      const row = el('div', 'pairing-row');
+      row.innerHTML = `
+        <div class="pairing-game">${p.game}</div>
+        <div class="pairing-teams">${p.team_a}<span class="pairing-vs">vs</span>${p.team_b}</div>
+      `;
+      pairingsWrap.appendChild(row);
+    });
+  }
+
   function renderProfileBtn() {
     const btn = byId('profileBtn');
     const s = session();
@@ -505,6 +538,7 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
     renderPodium(ctx);
     renderBoard(ctx);
     renderGameSelector(ctx);
+    renderPairingsSection(ctx);
     // Native emoji glyphs render as flat, ugly ribbon icons on some
     // systems (Windows in particular) - Twemoji swaps them for the same
     // consistent SVG art every chat app uses, so medals look the same
