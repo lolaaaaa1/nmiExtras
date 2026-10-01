@@ -146,9 +146,9 @@
       <div class="section" id="pairingsSection">
         <div class="section-hd"><div class="section-title">Game pairings</div></div>
         <div class="section-note" style="margin-bottom: 20px;">
-          One matchup per line, as <code>game | team A | team B</code> - e.g.
-          <code>GAME 1 | Call Center &amp; Membership &amp; QA | CR &amp; Accounts &amp; Actuarial &amp; BI</code>.
-          Shown on the Leaderboard's Pairings section, live year only.
+          One matchup per line, as <code>round | game | team A | team B</code> -
+          e.g. <code>1 | GAME 1 | HSP | CR</code>. Rounds are grouped and shown
+          in order on the Leaderboard's "Who plays who" section, live year only.
         </div>
         <div class="setup-card" style="max-width: 460px;">
           <div class="mfield">
@@ -476,7 +476,7 @@
 
       async function loadPairingsList() {
         const cached = await loadCsv(`data/${YEAR}/pairings.csv`);
-        byId('pairingsText').value = cached.rows.map((r) => `${r.game} | ${r.team_a} | ${r.team_b}`).join('\n');
+        byId('pairingsText').value = cached.rows.map((r) => `${r.round} | ${r.game} | ${r.team_a} | ${r.team_b}`).join('\n');
       }
 
       byId('pairingsSave').addEventListener('click', async () => {
@@ -491,11 +491,16 @@
             .map((line) => line.trim())
             .filter(Boolean)
             .map((line) => {
-              const [game, teamA, ...rest] = line.split('|');
-              return { game: (game || '').trim(), team_a: (teamA || '').trim(), team_b: rest.join('|').trim() };
+              const [round, game, teamA, ...rest] = line.split('|');
+              return {
+                round: (round || '').trim(),
+                game: (game || '').trim(),
+                team_a: (teamA || '').trim(),
+                team_b: rest.join('|').trim(),
+              };
             })
             .filter((r) => r.game || r.team_a || r.team_b);
-          await saveCsv(`data/${YEAR}/pairings.csv`, ['game', 'team_a', 'team_b'], rows, `Beyond the Desk: ${s.name} updated game pairings`);
+          await saveCsv(`data/${YEAR}/pairings.csv`, ['round', 'game', 'team_a', 'team_b'], rows, `Beyond the Desk: ${s.name} updated game pairings`);
           st.classList.add('ok');
           st.textContent = 'Saved.';
           toast('Pairings saved.');

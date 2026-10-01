@@ -491,13 +491,26 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
 
     const pairingsWrap = byId('pairingsList');
     pairingsWrap.innerHTML = '';
+    const byRound = {};
     ctx.pairings.rows.forEach((p) => {
-      const row = el('div', 'pairing-row');
-      row.innerHTML = `
-        <div class="pairing-game">${p.game}</div>
-        <div class="pairing-teams">${p.team_a}<span class="pairing-vs">vs</span>${p.team_b}</div>
-      `;
-      pairingsWrap.appendChild(row);
+      const r = p.round || '1';
+      (byRound[r] = byRound[r] || []).push(p);
+    });
+    Object.keys(byRound).sort((a, b) => Number(a) - Number(b)).forEach((r) => {
+      const label = el('div', 'pairing-round-label', `Round ${r}`);
+      pairingsWrap.appendChild(label);
+      const table = el('div', 'pairing-table');
+      byRound[r].forEach((p) => {
+        const row = el('div', 'pairing-row');
+        row.innerHTML = `
+          <div class="pairing-game">${p.game}</div>
+          <div class="pairing-team">${p.team_a}</div>
+          <div class="pairing-vs">VS</div>
+          <div class="pairing-team">${p.team_b}</div>
+        `;
+        table.appendChild(row);
+      });
+      pairingsWrap.appendChild(table);
     });
   }
 

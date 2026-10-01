@@ -1,3 +1,8 @@
-game,team_a,team_b
-GAME 1,Call Center & Membership & QA,CR & Accounts & Actuarial & BI
-GAME 2,Claims & Admin & HR & MIS & BMC,HSP & Sales
+round,game,team_a,team_b
+1,GAME 1,HSP,CR
+1,GAME 2,MIS & BMC,Actuarial and BI
+1,GAME 3,Admin and HR,Sales
+1,GAME 4,Call Centre,Accounts
+1,GAME 5,Membership & QA,Claims
+2,GAME 1,Call Center & Membership & QA,CR & Accounts & Actuarial & BI
+2,GAME 2,Claims & Admin & HR & MIS & BMC,HSP & Sales
