@@ -29,17 +29,18 @@
       <p class="hero-sub" id="gallerySub">Coming soon</p>
     </div>
 
-    <div class="modal-sub" style="text-align:center; margin-bottom: 16px;">
-      Got a photo from the trip? In Google Photos: open it &rarr; Share icon
-      &rarr; <b>Create link</b> &rarr; Copy link. Then paste that link below.
-      An admin reviews before anything shows up in the gallery.
-    </div>
-    <div style="margin: 0 0 30px;">
-      <iframe
-        src="https://docs.google.com/forms/d/e/1FAIpQLScO81HNMOQsXT6I2r6Dpvld731iBiiamm1RDee3NUSOeduwsw/viewform?embedded=true"
-        width="100%" height="520" frameborder="0" style="border:none; border-radius:8px;">
-        Loading…
-      </iframe>
+    <div class="setup-card" style="max-width: 460px; margin-bottom: 30px;">
+      <div class="modal-sub" style="text-align:center; margin-bottom: 16px;">
+        Got a photo from the trip? Pick it straight from your gallery -
+        no sign-in, nothing to copy/paste. An admin reviews before
+        anything shows up below.
+      </div>
+      <div class="mfield"><label>Your name (optional)</label><input id="upName" placeholder="e.g. Ama"></div>
+      <div class="mfield"><label>Photo</label><input id="upFile" type="file" accept="image/*" style="width:100%; font-size:12.5px;"></div>
+      <div class="modal-actions" style="justify-content: center;">
+        <button class="btn3d" id="upSend">Upload</button>
+      </div>
+      <div class="entry-status" id="upStatus" style="text-align: center;"></div>
     </div>
 
     <div class="photo-grid" id="photoGrid" style="display: none;"></div>
@@ -99,6 +100,33 @@
         });
       }
 
+      const CLOUDINARY_CLOUD = 'dctdv0zax';
+      const CLOUDINARY_PRESET = 'game pictures';
+
+      document.getElementById('upSend').addEventListener('click', async () => {
+        const status = document.getElementById('upStatus');
+        const fileInput = document.getElementById('upFile');
+        const file = fileInput.files[0];
+        if (!file) { window.BTD.toast('Pick a photo first.'); return; }
+        status.className = 'entry-status';
+        status.textContent = 'Uploading…';
+        try {
+          const body = new FormData();
+          body.append('file', file);
+          body.append('upload_preset', CLOUDINARY_PRESET);
+          const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method: 'POST', body });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error?.message || 'Upload failed.');
+          status.classList.add('ok');
+          status.textContent = 'Uploaded - thanks! An admin will review it soon.';
+          document.getElementById('upName').value = '';
+          fileInput.value = '';
+        } catch (e) {
+          status.classList.add('err');
+          status.textContent = e.message || 'Could not upload.';
+        }
+      });
+
       function renderNote() {
         document.getElementById('galleryNote').textContent = year === '2025'
           ? "The 2025 gallery isn't digitized yet - if you have photos from that day, send them to the organizer."
@@ -126,9 +154,10 @@
             soon.style.display = '';
             return;
           }
-          grid.innerHTML = cached.rows.map((r) => `
-            <div class="photo-cell"><img src="galleryPhotos/${year}/${r.filename}" alt="" loading="lazy"></div>
-          `).join('');
+          grid.innerHTML = cached.rows.map((r) => {
+            const src = /^https?:\/\//.test(r.filename) ? r.filename : `galleryPhotos/${year}/${r.filename}`;
+            return `<div class="photo-cell"><img src="${src}" alt="" loading="lazy"></div>`;
+          }).join('');
           grid.style.display = '';
           soon.style.display = 'none';
         });
