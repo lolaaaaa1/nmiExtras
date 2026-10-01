@@ -146,6 +146,25 @@
         </div>
       </div>
 
+      <div class="section" id="marqueePhotosSection">
+        <div class="section-hd"><div class="section-title">Marquee photos</div></div>
+        <div class="section-note" style="margin-bottom: 20px;">
+          A separate list from Gallery, for the scrolling strip on Home.
+          Paste Cloudinary image URLs here, one per line. Leave it empty
+          to just show the default trip photos - each link you add swaps
+          in for the oldest one still showing, up to 10 total.
+        </div>
+        <div class="setup-card" style="max-width: 460px;">
+          <div class="mfield">
+            <textarea id="marqueeText" rows="6" style="width:100%; background:none; border:1.5px solid var(--border); border-radius:8px; padding:10px 12px; font-family:var(--fm); font-size:12.5px; outline:none;" placeholder="e.g.&#10;https://res.cloudinary.com/.../image/upload/v.../abc123.jpg"></textarea>
+          </div>
+          <div class="modal-actions" style="justify-content: center;">
+            <button class="btn3d" id="marqueeSave">Save marquee photos</button>
+          </div>
+          <div class="entry-status" id="marqueeStatus" style="text-align: center;"></div>
+        </div>
+      </div>
+
     </div>
 
     <div class="foot">Have fun</div>
@@ -415,11 +434,39 @@
         }
       });
 
+      async function loadMarqueeList() {
+        const cached = await loadCsv(`data/${YEAR}/marquee.csv`);
+        byId('marqueeText').value = cached.rows.map((r) => r.filename).join('\n');
+      }
+
+      byId('marqueeSave').addEventListener('click', async () => {
+        const st = byId('marqueeStatus');
+        const s = session();
+        if (!s || !s.token) { toast('Sign in first.'); return; }
+        st.className = 'entry-status';
+        st.textContent = 'Saving…';
+        try {
+          const rows = byId('marqueeText').value
+            .split('\n')
+            .map((l) => l.trim())
+            .filter(Boolean)
+            .map((filename) => ({ filename }));
+          await saveCsv(`data/${YEAR}/marquee.csv`, ['filename'], rows, `Beyond the Desk: ${s.name} updated marquee photos`);
+          st.classList.add('ok');
+          st.textContent = 'Saved.';
+          toast('Marquee photos saved.');
+        } catch (e) {
+          st.classList.add('err');
+          st.textContent = e.message || 'Could not save.';
+        }
+      });
+
       refreshSession();
       loadEvent();
       loadItinerary();
       loadGames();
       loadGalleryList();
+      loadMarqueeList();
     })();
   </script>
 </body>
