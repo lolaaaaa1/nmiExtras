@@ -55,8 +55,12 @@
       const { loadCsv, toast } = window.BTD;
       const FEEDBACK_TO = ['philiptwum@nationwidemh.com', 'jeromejacaboba@nationwidemh.com'];
 
+      let feedbackTo = FEEDBACK_TO;
       loadCsv('data/2026/event.csv').then((cached) => {
         const row = cached.rows[0] || {};
+        if (row.feedback_emails) {
+          feedbackTo = row.feedback_emails.split(',').map((e) => e.trim()).filter(Boolean);
+        }
         if (row.company) {
           document.getElementById('eventStrip').textContent =
             `${row.company}  ·  ${row.date}  ·  ${row.location}`;
@@ -70,7 +74,7 @@
         if (!message) { toast('Write something first.'); return; }
         const subject = encodeURIComponent('Beyond the Desk - trip feedback');
         const body = encodeURIComponent(`${message}\n\n— ${name || 'Anonymous'}`);
-        const href = `mailto:${FEEDBACK_TO.join(',')}?subject=${subject}&body=${body}`;
+        const href = `mailto:${feedbackTo.join(',')}?subject=${subject}&body=${body}`;
         window.location.href = href;
         status.className = 'entry-status ok';
         status.textContent = 'Opening your mail app…';
