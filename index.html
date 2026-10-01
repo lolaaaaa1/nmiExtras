@@ -134,7 +134,7 @@
         const added = cached.rows.map((r) => (/^https?:\/\//.test(r.filename) ? r.filename : `galleryPhotos/2026/${r.filename}`));
         const list = [...FALLBACK_PHOTOS, ...added].slice(-10);
         const cardsHtml = list.map(
-          (src) => `<div class="marquee-card"><div class="marquee-card-inner"><img src="${src}" alt="" loading="lazy"></div></div>`
+          (src) => `<div class="marquee-card"><div class="marquee-card-inner"><img src="${src}" alt=""></div></div>`
         ).join('');
         track.innerHTML = cardsHtml + cardsHtml; // doubled for the seamless -50% loop
       });
