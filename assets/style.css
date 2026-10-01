@@ -393,9 +393,11 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
 .marquee-wrap { overflow: hidden; padding: 10px 0; margin: 6px 0 40px; }
 .marquee-track {
   display: flex; gap: 14px; width: max-content;
-  animation: marqueeScroll 11s linear infinite;
+  animation: marqueeScroll 7s linear infinite;
 }
-.marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+@media (hover: hover) {
+  .marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+}
 .marquee-card {
   width: 140px; height: 96px; border-radius: 10px; flex-shrink: 0;
   overflow: hidden; box-shadow: 0 6px 16px rgba(0,0,0,0.12);
