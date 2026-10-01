@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Desk — Beyond the Desk</title>
+<title>Desk - Beyond the Desk</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
@@ -276,8 +276,8 @@
 
           await saveCsv(path, headers, rows, `Beyond the Desk: ${s.name} recorded ${deptName} = ${score} in ${gameName}`);
           st.classList.add('ok');
-          st.textContent = `Saved — ${deptName}: ${score} pts in ${gameName}.`;
-          toast(`Saved: ${deptName} — ${gameName} = ${score}`);
+          st.textContent = `Saved - ${deptName}: ${score} pts in ${gameName}.`;
+          toast(`Saved: ${deptName} - ${gameName} = ${score}`);
         } catch (e) {
           st.classList.add('err');
           st.textContent = e.message || 'Could not save.';

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Feedback — Beyond the Desk</title>
+<title>Feedback - Beyond the Desk</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
@@ -73,7 +73,7 @@
         const message = document.getElementById('fbMessage').value.trim();
         if (!message) { toast('Write something first.'); return; }
         const subject = encodeURIComponent('Beyond the Desk - trip feedback');
-        const body = encodeURIComponent(`${message}\n\n— ${name || 'Anonymous'}`);
+        const body = encodeURIComponent(`${message}\n\n- ${name || 'Anonymous'}`);
         const href = `mailto:${feedbackTo.join(',')}?subject=${subject}&body=${body}`;
         window.location.href = href;
         status.className = 'entry-status ok';

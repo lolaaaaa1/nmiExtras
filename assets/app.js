@@ -1,20 +1,20 @@
 /* ============================================================
-   BEYOND THE DESK — app logic
+   BEYOND THE DESK - app logic
    Architecture: static page, data lives as CSV files in this repo.
    Reads: plain relative fetch() of data/<year>/*.csv (works on any
-   static host, e.g. GitHub Pages — no auth needed to just view).
+   static host, e.g. GitHub Pages - no auth needed to just view).
    Writes (score entry): GitHub Contents API with a Personal Access
    Token, so saving a score literally creates a commit. No server.
    ============================================================ */
 
 (() => {
-  // Fixed once by whoever deploys this — same repo for every scorer, so
+  // Fixed once by whoever deploys this - same repo for every scorer, so
   // signing in only ever asks for a name + that person's own token.
   const REPO_OWNER = 'lolaaaaa1';
   const REPO_NAME = 'nmiExtras';
   const REPO_BRANCH = 'main';
 
-  const SESSION_KEY = 'btd_session'; // { name, token } — the signed-in person
+  const SESSION_KEY = 'btd_session'; // { name, token } - the signed-in person
   const YEARS = ['2026', '2025'];
   const YEAR_LABEL = { '2026': 'THIS YEAR', '2025': '2025' };
 
@@ -212,7 +212,7 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
   async function saveCsv(path, headers, rows, message) {
     const s = session();
     if (!repoConfigured()) {
-      const e = new Error("This app isn't connected to a repo yet — ask the organizer to set REPO_OWNER/REPO_NAME in assets/app.js.");
+      const e = new Error("This app isn't connected to a repo yet - ask the organizer to set REPO_OWNER/REPO_NAME in assets/app.js.");
       throw e;
     }
     if (!s || !s.token) {
@@ -230,7 +230,7 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
         const fresh = await ghFetchFile(path);
         await ghWriteFile(path, content, fresh.sha, message);
       } else if (e.status === 401 || e.status === 403) {
-        const e2 = new Error(`GitHub rejected ${s.name}'s token — it may be missing repo write access, or expired.`);
+        const e2 = new Error(`GitHub rejected ${s.name}'s token - it may be missing repo write access, or expired.`);
         e2.needsSetup = true;
         throw e2;
       } else {
@@ -291,7 +291,7 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
     if (title) title.textContent = ev.title;
     const sub = byId('heroSub');
     if (sub) sub.textContent = ev.subtitle;
-    document.title = ev.title ? `${ev.title} — Beyond the Desk` : 'Beyond the Desk';
+    document.title = ev.title ? `${ev.title} - Beyond the Desk` : 'Beyond the Desk';
   }
 
   /* ---------------- rendering ---------------- */
@@ -346,7 +346,7 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
           <div class="board-track"><div class="board-fill" style="width:${pct}%"></div></div>
         </div>
       </div>
-      <div class="board-score">${value === 0 ? '—' : value}</div>
+      <div class="board-score">${value === 0 ? '-' : value}</div>
     `;
     return row;
   }
@@ -367,7 +367,7 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
     wrap.innerHTML = '';
     const top3 = ctx.totalsByDept.slice(0, 3).filter(d => d.total > 0);
     if (top3.length === 0) {
-      wrap.innerHTML = `<div class="podium-empty">No scores yet — check back once the games kick off.</div>`;
+      wrap.innerHTML = `<div class="podium-empty">No scores yet - check back once the games kick off.</div>`;
       return;
     }
     const order = top3.length >= 3 ? [1, 0, 2] : top3.length === 2 ? [1, 0] : [0];
@@ -394,7 +394,7 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
         detail: ctx.games.rows.map(g => g.name).join(' · ') },
       { key: 'departments', num: ctx.dep.rows.length, lbl: 'Departments',
         detail: ctx.dep.rows.map(d => d.name).join(' · ') },
-      { key: 'champion', num: hasScores ? champion.total : '—', lbl: 'Leader', sub: hasScores ? champion.name : 'TBD',
+      { key: 'champion', num: hasScores ? champion.total : '-', lbl: 'Leader', sub: hasScores ? champion.name : 'TBD',
         detail: hasScores ? ctx.totalsByDept.slice(0, 3).map((d, i) => `${MEDALS[i]} ${d.name} (${d.total})`).join('  ') : 'Standings appear once scores are recorded.' },
     ];
 
@@ -448,11 +448,11 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
     if (!game) { wrap.innerHTML = ''; note.textContent = ''; return; }
 
     if (game.has_breakdown !== '1') {
-      note.textContent = `${game.name} — not digitized for ${state.year}`;
+      note.textContent = `${game.name} - not digitized for ${state.year}`;
       wrap.innerHTML = `<div class="board-empty">Detailed scores for ${game.name} weren't recorded in ${state.year}. See the Leaderboard above for final totals.</div>`;
       return;
     }
-    note.textContent = `${game.name} — per department`;
+    note.textContent = `${game.name} - per department`;
     const rows = ctx.scores.rows.filter(r => r.game_id === game.id);
     const items = ctx.dep.rows.map(d => ({
       dep: d,
@@ -474,7 +474,7 @@ Nationwide Medical Insurance,"Sept 27, 2025","Safari Valley, Adukrom",NMI Staff 
     if (s && s.token) {
       btn.textContent = s.name;
       btn.classList.add('signed-in');
-      btn.title = `Signed in as ${s.name} — tap to sign out or switch`;
+      btn.title = `Signed in as ${s.name} - tap to sign out or switch`;
     } else {
       btn.textContent = 'Sign in';
       btn.classList.remove('signed-in');
