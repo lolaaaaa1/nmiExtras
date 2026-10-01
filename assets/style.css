@@ -368,6 +368,10 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
 .foot-links a:hover { color: var(--ink); border-bottom-color: var(--ink); }
 
 /* ── COMING SOON (gallery placeholder) ── */
+.photo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0 40px; }
+.photo-cell { aspect-ratio: 1; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.photo-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
 .soon-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 40px 0; }
 .soon-slot {
   aspect-ratio: 1; border: 1.5px dashed var(--border); border-radius: 4px;

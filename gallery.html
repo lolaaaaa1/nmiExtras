@@ -29,7 +29,13 @@
       <p class="hero-sub" id="gallerySub">Coming soon</p>
     </div>
 
-    <div class="soon-grid">
+    <div class="modal-actions" style="justify-content: center; margin-bottom: 24px;">
+      <a class="btn3d" href="https://docs.google.com/forms/d/e/REPLACE_WITH_UPLOAD_FORM_ID/viewform" target="_blank" rel="noopener">Upload a photo</a>
+    </div>
+
+    <div class="photo-grid" id="photoGrid" style="display: none;"></div>
+
+    <div class="soon-grid" id="soonGrid">
       <div class="soon-slot">🎮</div>
       <div class="soon-slot">🏆</div>
       <div class="soon-slot">🎉</div>
@@ -38,8 +44,8 @@
 
     <p class="soon-note" id="galleryNote">
       Photos from game day will show up here once they're in. Check back
-      after the games - or if you're the one holding the camera, ask the
-      organizer how to get them added.
+      after the games - or if you're the one holding the camera, use the
+      upload button above - an admin reviews before anything shows here.
     </p>
 
     <div class="foot">Have fun</div>
@@ -79,7 +85,7 @@
           const b = document.createElement('button');
           b.className = 'year-link' + (year === y ? ' active' : '');
           b.textContent = y === '2026' ? 'THIS YEAR' : y;
-          b.addEventListener('click', () => { year = y; renderYearToggle(); renderNote(); });
+          b.addEventListener('click', () => { year = y; renderYearToggle(); renderNote(); loadGalleryPhotos(); });
           wrap.appendChild(b);
         });
       }
@@ -98,8 +104,30 @@
         }
       });
 
+      // Approved photos: reviewed by an admin, filename list saved via
+      // Desk to data/<year>/gallery.csv - the actual files live in
+      // galleryPhotos/<year>/. Falls back to the "coming soon" slots
+      // until at least one is approved.
+      function loadGalleryPhotos() {
+        loadCsv(`data/${year}/gallery.csv`).then((cached) => {
+          const grid = document.getElementById('photoGrid');
+          const soon = document.getElementById('soonGrid');
+          if (!cached.rows.length) {
+            grid.style.display = 'none';
+            soon.style.display = '';
+            return;
+          }
+          grid.innerHTML = cached.rows.map((r) => `
+            <div class="photo-cell"><img src="galleryPhotos/${year}/${r.filename}" alt="" loading="lazy"></div>
+          `).join('');
+          grid.style.display = '';
+          soon.style.display = 'none';
+        });
+      }
+
       renderYearToggle();
       renderNote();
+      loadGalleryPhotos();
       if (window.twemoji) window.twemoji.parse(document.body);
     })();
   </script>
