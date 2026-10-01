@@ -394,17 +394,23 @@ img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
 .marquee-track {
   display: flex; gap: 14px; width: max-content;
   animation: marqueeScroll 7s linear infinite;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
 }
 @media (hover: hover) {
   .marquee-wrap:hover .marquee-track { animation-play-state: paused; }
 }
 .marquee-card {
-  width: 140px; height: 96px; border-radius: 10px; flex-shrink: 0;
-  overflow: hidden; box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  width: 140px; height: 96px; flex-shrink: 0;
   animation: marqueeShake 0.5s ease-in-out infinite;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
 }
 .marquee-card:nth-child(2n) { animation-delay: -0.15s; }
 .marquee-card:nth-child(3n) { animation-delay: -0.3s; }
+.marquee-card-inner {
+  width: 100%; height: 100%; border-radius: 10px; overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
 .marquee-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
 @keyframes marqueeScroll {
   from { transform: translateX(0); }
